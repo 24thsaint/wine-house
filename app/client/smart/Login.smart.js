@@ -52,7 +52,8 @@ var LoginSmartComponent = function (_React$Component) {
     }
   }, {
     key: 'loginAction',
-    value: function loginAction() {
+    value: function loginAction(evt) {
+      evt.preventDefault();
       console.log(this.state.formData);
     }
   }, {

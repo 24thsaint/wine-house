@@ -53,44 +53,49 @@ var Login = function (_React$Component) {
           direction: 'column'
         },
         _react2.default.createElement(
-          _Paper2.default,
-          { style: { padding: 20 }, elevation: 5 },
+          'form',
+          { onSubmit: this.props.handleLogin },
           _react2.default.createElement(
-            _Grid2.default,
-            { item: true },
-            _react2.default.createElement(_TextField2.default, {
-              id: 'username',
-              name: 'username',
-              label: 'Username',
-              value: this.props.formData.username,
-              onChange: this.props.handleInputChange,
-              margin: 'normal'
-            })
-          ),
-          _react2.default.createElement(
-            _Grid2.default,
-            { item: true },
-            _react2.default.createElement(_TextField2.default, {
-              id: 'password',
-              name: 'password',
-              label: 'Password',
-              type: 'password',
-              value: this.props.formData.password,
-              onChange: this.props.handleInputChange,
-              margin: 'normal'
-            })
-          ),
-          _react2.default.createElement(
-            _Grid2.default,
-            { item: true },
+            _Paper2.default,
+            { style: { padding: 20 }, elevation: 5 },
             _react2.default.createElement(
-              _core.Button,
-              {
-                color: 'primary',
-                variant: 'contained',
-                onClick: this.props.handleLogin
-              },
-              'Login'
+              _Grid2.default,
+              { item: true },
+              _react2.default.createElement(_TextField2.default, {
+                id: 'username',
+                name: 'username',
+                label: 'Username',
+                value: this.props.formData.username,
+                onChange: this.props.handleInputChange,
+                margin: 'normal'
+              })
+            ),
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true },
+              _react2.default.createElement(_TextField2.default, {
+                id: 'password',
+                name: 'password',
+                label: 'Password',
+                type: 'password',
+                value: this.props.formData.password,
+                onChange: this.props.handleInputChange,
+                margin: 'normal'
+              })
+            ),
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true },
+              _react2.default.createElement(
+                _core.Button,
+                {
+                  color: 'primary',
+                  variant: 'contained',
+                  onClick: this.props.handleLogin,
+                  type: 'submit'
+                },
+                'Login'
+              )
             )
           )
         )

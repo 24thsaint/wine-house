@@ -20,7 +20,8 @@ class LoginSmartComponent extends React.Component {
     this.inputHelper = new InputHelper(this);
   }
 
-  loginAction() {
+  loginAction(evt) {
+    evt.preventDefault();
     console.log(this.state.formData);
   }
 

@@ -17,36 +17,41 @@ class Login extends React.Component {
         justify={'center'}
         direction={'column'}
       >
-        <Paper style={{padding: 20}} elevation={5}>
-          <Grid item>
-            <TextField
-              id="username"
-              name="username"
-              label="Username"
-              value={this.props.formData.username}
-              onChange={this.props.handleInputChange}
-              margin="normal"
-            />
-          </Grid><Grid item>
-            <TextField
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={this.props.formData.password}
-              onChange={this.props.handleInputChange}
-              margin="normal"
-            />
-          </Grid><Grid item>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={this.props.handleLogin}
-            >
-            Login
-            </Button>
-          </Grid>
-        </Paper>
+        <form onSubmit={this.props.handleLogin}>
+          <Paper style={{padding: 20}} elevation={5}>
+            <Grid item>
+              <TextField
+                id="username"
+                name="username"
+                label="Username"
+                value={this.props.formData.username}
+                onChange={this.props.handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                id="password"
+                name="password"
+                label="Password"
+                type="password"
+                value={this.props.formData.password}
+                onChange={this.props.handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={this.props.handleLogin}
+                type="submit"
+              >
+                Login
+              </Button>
+            </Grid>
+          </Paper>
+        </form>
       </Grid>
     );
   }
