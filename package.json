@@ -27,8 +27,11 @@
     "start": "node app/",
     "mocha": "mocha test/ --recursive --exit",
     "build": "babel src/ --out-dir app/",
+    "build:watch": "babel src/ --out-dir app/ --watch",
+    "build:webpack:watch": "webpack -w",
     "build:webpack": "webpack",
-    "build:full": "npm run build && npm run build:webpack"
+    "build:full": "npm run build && npm run build:webpack",
+    "build:full:watch": "npm run build:watch & npm run build:webpack:watch"
   },
   "dependencies": {
     "@feathersjs/configuration": "^1.0.2",

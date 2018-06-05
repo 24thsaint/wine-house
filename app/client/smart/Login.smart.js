@@ -10,9 +10,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Login = require('./Login');
+var _HomeView = require('../dumb/HomeView');
 
-var _Login2 = _interopRequireDefault(_Login);
+var _HomeView2 = _interopRequireDefault(_HomeView);
+
+var _inputHelper = require('../helpers/inputHelper');
+
+var _inputHelper2 = _interopRequireDefault(_inputHelper);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21,36 +25,52 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// import Button from '@material-ui/core/Button';
-// import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
-// import CardContent from '@material-ui/core/CardContent';
 
-var HomeView = function (_React$Component) {
-  _inherits(HomeView, _React$Component);
+var LoginSmartComponent = function (_React$Component) {
+  _inherits(LoginSmartComponent, _React$Component);
 
-  function HomeView(props) {
-    _classCallCheck(this, HomeView);
+  function LoginSmartComponent(props) {
+    _classCallCheck(this, LoginSmartComponent);
 
-    return _possibleConstructorReturn(this, (HomeView.__proto__ || Object.getPrototypeOf(HomeView)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (LoginSmartComponent.__proto__ || Object.getPrototypeOf(LoginSmartComponent)).call(this, props));
+
+    _this.state = {
+      formData: {
+        username: '',
+        password: ''
+      }
+    };
+    _this.inputHelper = new _inputHelper2.default(_this);
+    _this.loginAction = _this.loginAction.bind(_this);
+    return _this;
   }
 
-  _createClass(HomeView, [{
+  _createClass(LoginSmartComponent, [{
+    key: 'componenWillMount',
+    value: function componenWillMount() {
+      this.inputHelper = new _inputHelper2.default(this);
+    }
+  }, {
+    key: 'loginAction',
+    value: function loginAction() {
+      console.log(this.state.formData);
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_Login2.default, {
-          handleLogin: this.props.handleLogin,
-          handleInputChange: this.props.handleInputChange,
-          formData: this.props.formData
+        _react2.default.createElement(_HomeView2.default, {
+          handleLogin: this.loginAction,
+          handleInputChange: this.inputHelper.handleInputChange,
+          formData: this.state.formData
         })
       );
     }
   }]);
 
-  return HomeView;
+  return LoginSmartComponent;
 }(_react2.default.Component);
 
-exports.default = HomeView;
+exports.default = LoginSmartComponent;
