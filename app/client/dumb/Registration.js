@@ -24,8 +24,6 @@ var _TextField2 = _interopRequireDefault(_TextField);
 
 var _core = require('@material-ui/core');
 
-var _reactRouterDom = require('react-router-dom');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -57,14 +55,26 @@ var Login = function (_React$Component) {
         _react2.default.createElement(
           'h1',
           null,
-          'Login!'
+          'Register!'
         ),
         _react2.default.createElement(
           'form',
-          { onSubmit: this.props.handleLogin },
+          { onSubmit: this.props.handleRegister },
           _react2.default.createElement(
             _Paper2.default,
             { style: { padding: 20 }, elevation: 5 },
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true },
+              _react2.default.createElement(_TextField2.default, {
+                id: 'fullClientName',
+                name: 'fullClientName',
+                label: 'Full Name',
+                value: this.props.formData.fullClientName,
+                onChange: this.props.handleInputChange,
+                margin: 'normal'
+              })
+            ),
             _react2.default.createElement(
               _Grid2.default,
               { item: true },
@@ -98,24 +108,10 @@ var Login = function (_React$Component) {
                 {
                   color: 'primary',
                   variant: 'contained',
-                  onClick: this.props.handleLogin,
+                  onClick: this.props.handleRegister,
                   type: 'submit'
                 },
                 'Login'
-              )
-            ),
-            _react2.default.createElement(
-              _Grid2.default,
-              { item: true },
-              _react2.default.createElement(
-                'p',
-                null,
-                'No account yet? ',
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: '/register' },
-                  'Click here!'
-                )
               )
             )
           )

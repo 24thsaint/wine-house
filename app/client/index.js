@@ -16,6 +16,10 @@ var _Login = require('./smart/Login.smart');
 
 var _Login2 = _interopRequireDefault(_Login);
 
+var _Registration = require('./smart/Registration.smart');
+
+var _Registration2 = _interopRequireDefault(_Registration);
+
 var _Error = require('./dumb/Error404');
 
 var _Error2 = _interopRequireDefault(_Error);
@@ -30,6 +34,7 @@ var _styles = require('@material-ui/core/styles');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* global document */
 var theme = (0, _styles.createMuiTheme)({
   palette: {
     primary: {
@@ -45,8 +50,7 @@ var theme = (0, _styles.createMuiTheme)({
       contrastText: '#000000'
     }
   }
-}); /* global document */
-
+});
 
 var Index = function Index() {
   return _react2.default.createElement(
@@ -76,6 +80,7 @@ var Index = function Index() {
                 _reactRouterDom.Switch,
                 null,
                 _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Login2.default }),
+                _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Registration2.default }),
                 _react2.default.createElement(_reactRouterDom.Route, { component: _Error2.default })
               )
             )

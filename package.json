@@ -25,6 +25,7 @@
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint src/. test/. --config .eslintrc.json",
     "start": "node app/",
+    "start:watch": "nodemon app/",
     "mocha": "mocha test/ --recursive --exit",
     "build": "babel src/ --out-dir app/",
     "build:watch": "babel src/ --out-dir app/ --watch",

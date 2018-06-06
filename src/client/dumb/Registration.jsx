@@ -3,7 +3,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
   constructor(props) {
@@ -18,9 +17,19 @@ class Login extends React.Component {
         justify={'center'}
         direction={'column'}
       >
-        <h1>Login!</h1>
-        <form onSubmit={this.props.handleLogin}>
-          <Paper style={{ padding: 20 }} elevation={5}>
+        <h1>Register!</h1>
+        <form onSubmit={this.props.handleRegister}>
+          <Paper style={{padding: 20}} elevation={5}>
+            <Grid item>
+              <TextField
+                id="fullClientName"
+                name="fullClientName"
+                label="Full Name"
+                value={this.props.formData.fullClientName}
+                onChange={this.props.handleInputChange}
+                margin="normal"
+              />
+            </Grid>
             <Grid item>
               <TextField
                 id="username"
@@ -46,14 +55,11 @@ class Login extends React.Component {
               <Button
                 color="primary"
                 variant="contained"
-                onClick={this.props.handleLogin}
+                onClick={this.props.handleRegister}
                 type="submit"
               >
                 Login
               </Button>
-            </Grid>
-            <Grid item>
-              <p>No account yet? <Link to="/register">Click here!</Link></p>
             </Grid>
           </Paper>
         </form>
