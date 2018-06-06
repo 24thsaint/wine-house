@@ -11,20 +11,21 @@ import GlobalAppBar from './dumb/GlobalAppBar';
 import { Grid } from '@material-ui/core';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import WineRegistrationComponent from './smart/WineRegistration.smart';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#ffa4a2',
-      main: '#e57373',
-      dark: '#af4448',
-      contrastText: '#000000',
+      light: '#d4996a',
+      main: '#aa6b39',
+      dark: '#552600',
+      contrastText: '#ffd0aa',
     },
     secondary: {
-      light: '#ff6f60',
-      main: '#e53935',
-      dark: '#ab000d',
-      contrastText: '#000000',
+      light: '#41817f',
+      main: '#226765',
+      dark: '#003432',
+      contrastText: '#679b99',
     },
   },
 });
@@ -42,6 +43,7 @@ const Index = () => (
               <Switch>
                 <Route exact path="/" component={LoginComponent} />
                 <Route path="/register" component={RegistrationComponent} />
+                <Route path="/wine-registration" component={WineRegistrationComponent} />
                 <Route component={Error404} />
               </Switch>
             </Grid>
