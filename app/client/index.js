@@ -36,11 +36,14 @@ var _WineRegistration = require('./smart/WineRegistration.smart');
 
 var _WineRegistration2 = _interopRequireDefault(_WineRegistration);
 
+var _Dashboard = require('./smart/Dashboard.smart');
+
+var _Dashboard2 = _interopRequireDefault(_Dashboard);
+
 require('./client');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* global document */
 var theme = (0, _styles.createMuiTheme)({
   palette: {
     primary: {
@@ -56,7 +59,8 @@ var theme = (0, _styles.createMuiTheme)({
       contrastText: '#679b99'
     }
   }
-});
+}); /* global document */
+
 
 var Index = function Index() {
   return _react2.default.createElement(
@@ -88,6 +92,7 @@ var Index = function Index() {
                 _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Login2.default }),
                 _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Registration2.default }),
                 _react2.default.createElement(_reactRouterDom.Route, { path: '/wine-registration', component: _WineRegistration2.default }),
+                _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
                 _react2.default.createElement(_reactRouterDom.Route, { component: _Error2.default })
               )
             )

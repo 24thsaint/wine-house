@@ -12,6 +12,8 @@ import { Grid } from '@material-ui/core';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import WineRegistrationComponent from './smart/WineRegistration.smart';
+import DashboardSmartComponent from './smart/Dashboard.smart';
+
 import './client';
 
 const theme = createMuiTheme({
@@ -45,6 +47,7 @@ const Index = () => (
                 <Route exact path="/" component={LoginComponent} />
                 <Route path="/register" component={RegistrationComponent} />
                 <Route path="/wine-registration" component={WineRegistrationComponent} />
+                <Route path="/dashboard" component={DashboardSmartComponent} />
                 <Route component={Error404} />
               </Switch>
             </Grid>

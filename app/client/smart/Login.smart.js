@@ -10,6 +10,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = require('react-router-dom');
+
 var _HomeView = require('../dumb/HomeView');
 
 var _HomeView2 = _interopRequireDefault(_HomeView);
@@ -18,7 +20,13 @@ var _inputHelper = require('../helpers/inputHelper');
 
 var _inputHelper2 = _interopRequireDefault(_inputHelper);
 
+var _client = require('../client');
+
+var _client2 = _interopRequireDefault(_client);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -38,7 +46,8 @@ var LoginSmartComponent = function (_React$Component) {
       formData: {
         username: '',
         password: ''
-      }
+      },
+      isAuthenticated: false
     };
     _this.inputHelper = new _inputHelper2.default(_this);
     _this.loginAction = _this.loginAction.bind(_this);
@@ -52,10 +61,65 @@ var LoginSmartComponent = function (_React$Component) {
     }
   }, {
     key: 'loginAction',
-    value: function loginAction(evt) {
-      evt.preventDefault();
-      console.log(this.state.formData);
-    }
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(evt) {
+        var authenticationDetails, result, payload, userData;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                evt.preventDefault();
+                authenticationDetails = this.state.formData;
+
+                authenticationDetails.strategy = 'local';
+
+                _context.prev = 3;
+                _context.next = 6;
+                return _client2.default.authenticate(authenticationDetails);
+
+              case 6:
+                result = _context.sent;
+                _context.next = 9;
+                return _client2.default.passport.verifyJWT(result.accessToken);
+
+              case 9:
+                payload = _context.sent;
+                _context.next = 12;
+                return _client2.default.service('api/users').get(payload.userId);
+
+              case 12:
+                userData = _context.sent;
+
+                _client2.default.set('user', userData);
+                this.setState({
+                  isAuthenticated: true
+                });
+                _context.next = 20;
+                break;
+
+              case 17:
+                _context.prev = 17;
+                _context.t0 = _context['catch'](3);
+
+                this.setState({
+                  isAuthenticated: false,
+                  error: _context.t0
+                });
+
+              case 20:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[3, 17]]);
+      }));
+
+      function loginAction(_x) {
+        return _ref.apply(this, arguments);
+      }
+
+      return loginAction;
+    }()
   }, {
     key: 'render',
     value: function render() {
@@ -66,7 +130,8 @@ var LoginSmartComponent = function (_React$Component) {
           handleLogin: this.loginAction,
           handleInputChange: this.inputHelper.handleInputChange,
           formData: this.state.formData
-        })
+        }),
+        this.state.isAuthenticated ? _react2.default.createElement(_reactRouterDom.Redirect, { to: '/dashboard' }) : undefined
       );
     }
   }]);
