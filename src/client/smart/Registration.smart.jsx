@@ -11,6 +11,8 @@ import Registration from '../dumb/Registration';
 import InputHelper from '../helpers/inputHelper';
 import client from '../client';
 
+import Ethereum from '../../client/ethereum';
+
 class RegistrationSmartComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -22,20 +24,34 @@ class RegistrationSmartComponent extends React.Component {
       },
       // 0 = neutral, 1 = error, 2 = successful, 3 = success redirect
       registrationStatus: 0,
-      open: false
+      open: false,
+      walletProgress: 0
     };
     this.inputHelper = new InputHelper(this);
     this.registrationFormHandler = this.registrationFormHandler.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.setWalletProgress = this.setWalletProgress.bind(this);
   }
 
   async componentDidMount() {
     this.userService = await client.service('api/users');
   }
 
+  setWalletProgress(progress) {
+    this.setState({
+      walletProgress: progress
+    });
+  }
+
   async registrationFormHandler(evt) {
     evt.preventDefault();
+    const formData = this.state.formData;
+    const wallet = Ethereum.generateWallet();
+    
+    formData.wallet = await wallet.encrypt(formData.password, this.setWalletProgress);
+
     const result = await this.userService.create(this.state.formData);
+
     if (result._id) {
       this.setState({
         registrationStatus: 2,
@@ -61,6 +77,7 @@ class RegistrationSmartComponent extends React.Component {
           handleRegister={this.registrationFormHandler}
           handleInputChange={this.inputHelper.handleInputChange}
           formData={this.state.formData}
+          walletProgress={this.state.walletProgress}
         />
         <Dialog
           open={this.state.open}

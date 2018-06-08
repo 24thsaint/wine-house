@@ -31,7 +31,7 @@ class LoginSmartComponent extends React.Component {
       const result = await client.authenticate(authenticationDetails);
       const payload = await client.passport.verifyJWT(result.accessToken);
       const userData = await client.service('api/users').get(payload.userId);
-      client.set('user', userData);
+      await client.set('user', userData);
       this.setState({
         isAuthenticated: true
       });

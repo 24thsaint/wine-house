@@ -21,7 +21,6 @@ class WineRegistrationSmartComponent extends React.Component {
 
   registrationFormHandler(evt) {
     evt.preventDefault();
-    console.log(this.state.formData);
   }
 
   render() {

@@ -3,16 +3,22 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      lastValue: -1
+    };
+  }
+
+  getProgress() {
+    return Math.ceil(this.props.walletProgress * 100);
   }
 
   render() {
     return (
-      
-
       <Grid
         container
         alignItems={'center'}
@@ -53,16 +59,32 @@ class Login extends React.Component {
                 margin="normal"
               />
             </Grid>
+
+            {this.props.walletProgress > 0 && this.props.walletProgress < 1 ? 
+              <Grid item>
+                <p>Creating wallet, please wait...</p>
+                <LinearProgress color="secondary" variant="determinate" value={this.getProgress()} />
+              </Grid> 
+              : undefined
+            }
+
+            {this.props.walletProgress === 1 ? <Grid item>
+              <LinearProgress color="primary" />
+            </Grid> 
+              : undefined
+            }
+
             <Grid item>
               <Button
                 color="primary"
                 variant="contained"
                 onClick={this.props.handleRegister}
                 type="submit"
+                disabled={this.props.walletProgress > 0 && this.props.walletProgress < 1}
               >
-                Login
+                Register
               </Button>
-            </Grid>
+            </Grid> 
           </Paper>
         </form>
       </Grid>
