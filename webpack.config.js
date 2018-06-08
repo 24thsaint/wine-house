@@ -22,6 +22,11 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules(\/|\\)(?!(@feathersjs))/,
+        loader: 'babel-loader'
+      }
     ]
   }
 };

@@ -36,8 +36,11 @@ var _WineRegistration = require('./smart/WineRegistration.smart');
 
 var _WineRegistration2 = _interopRequireDefault(_WineRegistration);
 
+require('./client');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* global document */
 var theme = (0, _styles.createMuiTheme)({
   palette: {
     primary: {
@@ -53,8 +56,7 @@ var theme = (0, _styles.createMuiTheme)({
       contrastText: '#679b99'
     }
   }
-}); /* global document */
-
+});
 
 var Index = function Index() {
   return _react2.default.createElement(

@@ -5,5 +5,30 @@
   "paginate": {
     "default": 10,
     "max": 50
+  },
+  "mongodb": "mongodb://localhost:27017/wine_house",
+  "authentication": {
+    "secret": "819e9bc7e1c7427466b8ec50a2912ff992c550b92af9cede93c6814bf86012a252c2438e1b802809b7d2d73593d49857166e0dfb46ab6e7f903e3c29b3ac99ded30904fb0c938476a670fbb0098afb1a2b4ae5599a5dd8cb92ef0e0ce0d8da401a10a0c4bc1a8233ca4462857a89ad8927293218b12e376533765245784b05b5b8ca90f3203e306cb10d6658c4b46c4a01b41bc244d8c0d10f5d66199d0f20359d3c1de657d70326eb986b1ec499b458146437bb1664e6e55a18e84fc78a4dced87187992cfaec145d51a699011bf45a25265a05604fa035cd08c7e0085772097d444ee7e237af873a4708e3e5d217d0b33241da1df954edb7c62ffd72869e65",
+    "strategies": [
+      "jwt",
+      "local"
+    ],
+    "path": "/authentication",
+    "service": "api/users",
+    "jwt": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "https://yourdomain.com",
+      "subject": "anonymous",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "local": {
+      "entity": "user",
+      "usernameField": "email",
+      "passwordField": "password"
+    }
   }
 }

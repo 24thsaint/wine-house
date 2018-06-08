@@ -12,6 +12,7 @@ import { Grid } from '@material-ui/core';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import WineRegistrationComponent from './smart/WineRegistration.smart';
+import './client';
 
 const theme = createMuiTheme({
   palette: {

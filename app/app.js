@@ -17,6 +17,10 @@ var services = require('./services');
 var appHooks = require('./app.hooks');
 var channels = require('./channels');
 
+var mongodb = require('./mongodb');
+
+var authentication = require('./authentication');
+
 var app = express(feathers());
 
 // Load app configuration
@@ -37,8 +41,11 @@ app.use('*', express.static(path.resolve('public')));
 app.configure(express.rest());
 app.configure(socketio());
 
+app.configure(mongodb);
+
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
+app.configure(authentication);
 // Set up our services (see `services/index.js`)
 app.configure(services);
 // Set up event channels (see channels.js)
