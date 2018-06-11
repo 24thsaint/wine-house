@@ -6,7 +6,7 @@ class Ethereum {
   }
 
   async unlockWallet(walletJSON, password, progressFunction) {
-    const wallet = new ethers.Wallet.fromEncryptedWallet(walletJSON, password, progressFunction);
+    const wallet = await new ethers.Wallet.fromEncryptedWallet(walletJSON, password, progressFunction);
     return wallet;
   }
 
