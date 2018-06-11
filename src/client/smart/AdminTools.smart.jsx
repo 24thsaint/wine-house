@@ -10,6 +10,7 @@ import EthereumContract from '../ethereumContractClient';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import client from '../client';
 import InputHelper from '../helpers/inputHelper';
+import settings from '../helpers/settings';
 
 class AdminTools extends React.Component {
   constructor(props) {
@@ -69,17 +70,8 @@ class AdminTools extends React.Component {
     this.handleClose();
     const contractAddress = await this.ethereumContract.deployContract(wallet.privateKey, this.setDeployProgressMessage);
 
-    let setting;
-    const extSetting = await this.settingsService.find({ value: 'contractAddress' });
-    if (extSetting.data.length > 0) {
-      setting = await this.settingsService.patch(extSetting.data[0]._id, { value: contractAddress });
-    } else {
-      setting = await this.settingsService.create({
-        key: 'contractAddress',
-        value: contractAddress
-      });
-    }
-    
+    let setting = await settings.set('contractAddress', contractAddress);
+
     this.setState({
       notificationOpen: true,
       notificationMessage: 'Contract deploy successful! Address: ' + setting.value

@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import WineRegistrationComponent from '../smart/WineRegistration.smart';
 import PartnerRegistration from '../smart/PartnerRegistration.smart';
-
+import WineSummary from '../smart/WineSummary.smart';
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -75,6 +75,17 @@ class Dashboard extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>Todo Implementation</Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel
+            expanded={expanded === 'summaryPanel'}
+            onChange={() => { this.handlePanelChange('summaryPanel'); }}
+          >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Wine Summary</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <WineSummary />
             </ExpansionPanelDetails>
           </ExpansionPanel>
         </Grid>

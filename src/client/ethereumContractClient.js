@@ -10,11 +10,18 @@ class EthereumContractClient {
     this.provider = provider;
   }
 
-  async loadContract(contractAddress, privateKey) {
+  async loadContractPrivate(contractAddress, privateKey) {
     const wallet = this.loadWallet(privateKey);
     const contract = await this.getContract();
     const abi = contract.abi;
     this.contract = new ethers.Contract(contractAddress, abi, wallet);
+    return this.contract;
+  }
+
+  async loadContractPublic(contractAddress) {
+    const contract = await this.getContract();
+    const abi = contract.abi;
+    this.contract = new ethers.Contract(contractAddress, abi, this.provider);
     return this.contract;
   }
 

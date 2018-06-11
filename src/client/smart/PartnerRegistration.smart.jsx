@@ -52,7 +52,7 @@ class PartnerRegistration extends React.Component {
       });
       const settings = await this.settingsService.find({ key: 'contractAddress' });
       const contractAddress = settings.data[0].value;
-      const contract = await ethereumContractClient.loadContract(contractAddress, wallet.privateKey);
+      const contract = await ethereumContractClient.loadContractPrivate(contractAddress, wallet.privateKey);
       this.setState({
         progressMessage: 'Sending Transaction...'
       });
