@@ -42,7 +42,8 @@ class WalletImportSmartComponent extends React.Component {
       const ethereumWallet = new EthereumWallet('0x' + this.state.formData.privateKey);
       const encryptedWallet = await ethereumWallet.wallet.encrypt(this.state.formData.password, this.handleProgress);
       const user = client.get('user');
-      const result = await client.service('/api/users').patch(user._id, { wallet: encryptedWallet });
+      const result = await client.service('/api/users').patch(user._id, { wallet: encryptedWallet, address: ethereumWallet.wallet.address });
+      client.set('user', result);
       this.setState({
         success: {
           status: true,

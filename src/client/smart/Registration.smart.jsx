@@ -49,6 +49,7 @@ class RegistrationSmartComponent extends React.Component {
     const ethereumWallet = new EthereumWallet();
     
     formData.wallet = await ethereumWallet.wallet.encrypt(formData.password, this.setWalletProgress);
+    formData.address = '0x' + JSON.parse(formData.wallet).address;
 
     const result = await this.userService.create(this.state.formData);
 
