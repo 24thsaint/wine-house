@@ -9,7 +9,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: false,
     };
   }
 
@@ -35,7 +35,9 @@ class Dashboard extends React.Component {
       >
         <Grid item>
           <Typography variant="headline">Welcome, {this.props.user.fullClientName}</Typography>
-          <Typography variant="subheading">Balance: {this.props.balance}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="subheading">Balance ({'0x' + this.props.address}): {this.props.balance}</Typography>
         </Grid>
         <Grid item>
           <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>

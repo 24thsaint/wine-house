@@ -31,6 +31,7 @@ class DashboardSmartComponent extends React.Component {
     const wallet = client.get('wallet');
     const balance = await this.ethereumContract.getBalance(wallet.address);
     this.setState({
+      address: wallet.address,
       balance
     });
     return balance;
@@ -39,7 +40,12 @@ class DashboardSmartComponent extends React.Component {
   render() {
     return (
       <Grid>
-        <Dashboard user={this.state.user} balance={this.state.balance} history={this.props.history} />
+        <Dashboard 
+          user={this.state.user} 
+          address={this.state.address}
+          balance={this.state.balance} 
+          history={this.props.history} 
+        />
         <Divider style={{ marginTop: '10px', marginBottom: '10px' }}/>
         <AdminTools />
       </Grid>
