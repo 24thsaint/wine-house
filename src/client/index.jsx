@@ -3,18 +3,19 @@ import 'typeface-roboto';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Grid } from '@material-ui/core';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+import './client';
 
 import LoginComponent from './smart/Login.smart';
 import RegistrationComponent from './smart/Registration.smart';
 import Error404 from './dumb/Error404';
 import GlobalAppBar from './dumb/GlobalAppBar';
-import { Grid } from '@material-ui/core';
 
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import WineRegistrationComponent from './smart/WineRegistration.smart';
 import DashboardSmartComponent from './smart/Dashboard.smart';
-
-import './client';
+import WalletImportSmartComponent from './smart/WalletImport.smart';
 
 const theme = createMuiTheme({
   palette: {
@@ -48,6 +49,7 @@ const Index = () => (
                 <Route path="/register" component={RegistrationComponent} />
                 <Route path="/wine-registration" component={WineRegistrationComponent} />
                 <Route path="/dashboard" component={DashboardSmartComponent} />
+                <Route path="/import-wallet" component={WalletImportSmartComponent} />
                 <Route component={Error404} />
               </Switch>
             </Grid>

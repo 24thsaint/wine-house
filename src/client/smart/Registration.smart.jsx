@@ -11,7 +11,7 @@ import Registration from '../dumb/Registration';
 import InputHelper from '../helpers/inputHelper';
 import client from '../client';
 
-import Ethereum from '../../client/ethereum';
+import EthereumWallet from '../ethereumWallet';
 
 class RegistrationSmartComponent extends React.Component {
   constructor(props) {
@@ -46,9 +46,9 @@ class RegistrationSmartComponent extends React.Component {
   async registrationFormHandler(evt) {
     evt.preventDefault();
     const formData = this.state.formData;
-    const wallet = Ethereum.generateWallet();
+    const ethereumWallet = new EthereumWallet();
     
-    formData.wallet = await wallet.encrypt(formData.password, this.setWalletProgress);
+    formData.wallet = await ethereumWallet.wallet.encrypt(formData.password, this.setWalletProgress);
 
     const result = await this.userService.create(this.state.formData);
 

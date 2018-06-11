@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Button } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import authenticate from '../authenticator';
@@ -31,6 +31,10 @@ class Dashboard extends React.Component {
     });
   }
 
+  navigate(route) {
+    this.props.history.push(route);
+  }
+
   render() {
     const { expanded } = this.state;
 
@@ -43,6 +47,9 @@ class Dashboard extends React.Component {
       >
         <Grid item>
           <Typography variant="headline">Welcome, {this.state.user.fullClientName}</Typography>
+        </Grid>
+        <Grid item>
+          <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>
         </Grid>
         <Grid item style={{ width: '100%' }}>
           <ExpansionPanel

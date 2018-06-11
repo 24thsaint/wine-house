@@ -5,6 +5,8 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import WalletProgress from '../dumb/WalletProgress';
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -60,13 +62,9 @@ class Login extends React.Component {
               />
             </Grid>
 
-            {this.props.walletProgress > 0 && this.props.walletProgress < 1 ? 
-              <Grid item>
-                <p>Creating wallet, please wait...</p>
-                <LinearProgress color="secondary" variant="determinate" value={this.getProgress()} />
-              </Grid> 
-              : undefined
-            }
+            <Grid item>
+              <WalletProgress progress={this.props.walletProgress} />
+            </Grid>
 
             {this.props.walletProgress === 1 ? <Grid item>
               <LinearProgress color="primary" />
