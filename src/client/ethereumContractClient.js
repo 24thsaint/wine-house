@@ -1,8 +1,9 @@
+/* global window */
 import ethers from 'ethers';
 import axios from 'axios';
 
 const providers = ethers.providers;
-var provider = new providers.JsonRpcProvider('http://localhost:8545'); 
+var provider = new providers.JsonRpcProvider('http://127.0.0.1:8545'); 
 
 class EthereumContractClient {
   constructor() {
@@ -15,26 +16,36 @@ class EthereumContractClient {
     return ethers.utils.formatEther(rawValue);
   }
 
-  async deployContract(_privateKey) {
+  async deployContract(_privateKey, progressCallBack) {
     const wallet = new ethers.Wallet(_privateKey, this.provider);
     
-    const contract = await axios.get('/eth/contract/get');
+    const response = await axios({
+      method: 'get',
+      url: window.location.origin + '/eth/contract/get',
+      responseType: 'json'
+    });
+
+    const contract = response.data;
 
     const byteCode = contract.bytecode;
-    const abi = contract.interface;
-
+    const abi = contract.abi;
     const deployTransaction = this.Contract.getDeployTransaction(byteCode, abi);
-    const result = await wallet.sendTransaction(deployTransaction);
-    console.log('Transaction created!');
-    console.log(result);
-    console.log('====================================================');
-    const contractAddress = ethers.utils.getContractAddress(result);
-    console.log('Contract address:');
-    console.log(contractAddress);
-    const mineResult = await provider.waitForTransaction(result.hash);
-    console.log(mineResult);
-    this.contract = contractAddress;
-    return contractAddress;
+    deployTransaction.gasLimit = 4000000;
+
+    try {
+      progressCallBack('Sending Transaction...', null);
+      const result = await wallet.sendTransaction(deployTransaction);
+      progressCallBack('Transaction Sent!', result);
+      const contractAddress = ethers.utils.getContractAddress(result);
+      progressCallBack('Waiting for transaction to be mined...', contractAddress);
+      const mineResult = await provider.waitForTransaction(result.hash);
+      progressCallBack('SUCCESSFUL!', mineResult);
+      this.contract = contractAddress;
+    } catch (e) {
+      console.log(e);
+    }
+
+    return this.contract;
   }
 }
 

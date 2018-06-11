@@ -33,8 +33,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
 
 app.get('/eth/contract/get', (request, response) => {
-  const contract = fs.readFileSync(path.resolve('solidity/build/contracts/WineHouse.json'));
-  response.json(contract);
+  fs.readFile(path.resolve('solidity/build/contracts/WineHouse.json'), 'utf8', (err, data) => {
+    if (err) response.json(err);
+    response.json(JSON.parse(data));
+  });
 });
 
 // Host the public folder

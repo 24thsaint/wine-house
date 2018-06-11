@@ -17,8 +17,17 @@ class WalletProgress extends React.Component {
         {
           this.props.progress > 0 && this.props.progress < 1 ? 
             <div>
-              <Typography>Creating wallet, please wait...</Typography>
+              <Typography>{this.props.message}</Typography>
               <LinearProgress color="secondary" variant="determinate" value={this.getProgress()} />
+            </div> 
+            : undefined
+        }
+
+        {
+          this.props.progress === 1 ? 
+            <div>
+              <Typography>{this.props.message}</Typography>
+              <LinearProgress color="secondary" />
             </div> 
             : undefined
         }

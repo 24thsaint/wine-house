@@ -27,6 +27,9 @@ class WalletUnlockDialog extends React.Component {
             </DialogContentText>
             <TextField
               autoFocus
+              onChange={this.props.handleInputChange}
+              value={this.props.password}
+              name="password"
               margin="dense"
               id="password"
               label="Wallet Password"
@@ -38,7 +41,7 @@ class WalletUnlockDialog extends React.Component {
             <Button onClick={this.props.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.handleClose} color="primary">
+            <Button onClick={this.props.handleSubmit} color="primary">
               Confirm
             </Button>
           </DialogActions>

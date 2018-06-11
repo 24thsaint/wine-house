@@ -63,14 +63,8 @@ class Login extends React.Component {
             </Grid>
 
             <Grid item>
-              <WalletProgress progress={this.props.walletProgress} />
+              <WalletProgress progress={this.props.walletProgress} message={'Creating wallet, please wait...'} />
             </Grid>
-
-            {this.props.walletProgress === 1 ? <Grid item>
-              <LinearProgress color="primary" />
-            </Grid> 
-              : undefined
-            }
 
             <Grid item>
               <Button
