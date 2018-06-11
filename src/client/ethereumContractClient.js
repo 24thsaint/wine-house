@@ -3,12 +3,23 @@ import ethers from 'ethers';
 import axios from 'axios';
 
 const providers = ethers.providers;
-var provider = new providers.JsonRpcProvider('http://127.0.0.1:8545'); 
+const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545'); 
 
 class EthereumContractClient {
   constructor() {
     this.provider = provider;
-    this.Contract = ethers.Contract;
+  }
+
+  async loadContract(contractAddress, privateKey) {
+    const wallet = this.loadWallet(privateKey);
+    const contract = await this.getContract();
+    const abi = contract.abi;
+    this.contract = new ethers.Contract(contractAddress, abi, wallet);
+    return this.contract;
+  }
+
+  loadWallet(privateKey) {
+    return new ethers.Wallet(privateKey, this.provider);
   }
 
   async getBalance(address) {
@@ -16,20 +27,24 @@ class EthereumContractClient {
     return ethers.utils.formatEther(rawValue);
   }
 
-  async deployContract(_privateKey, progressCallBack) {
-    const wallet = new ethers.Wallet(_privateKey, this.provider);
-    
+  async getContract() {
     const response = await axios({
       method: 'get',
       url: window.location.origin + '/eth/contract/get',
       responseType: 'json'
     });
 
-    const contract = response.data;
+    return response.data;
+  }
+
+  async deployContract(privateKey, progressCallBack) {
+    const wallet = this.loadWallet(privateKey);
+    
+    const contract = await this.getContract();
 
     const byteCode = contract.bytecode;
     const abi = contract.abi;
-    const deployTransaction = this.Contract.getDeployTransaction(byteCode, abi);
+    const deployTransaction = ethers.Contract.getDeployTransaction(byteCode, abi);
     deployTransaction.gasLimit = 4000000;
 
     try {

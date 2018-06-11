@@ -79,10 +79,18 @@ class AdminTools extends React.Component {
     this.setDeployProgressMessage('Unlocking wallet...');
     const result = await EthereumWallet.unlockWallet(encryptedWallet, this.state.formData.password, this.setProgress);
     const contractAddress = await this.ethereumContract.deployContract(result.privateKey, this.setDeployProgressMessage);
-    const setting = await this.settingsService.create({
-      key: 'contractAddress',
-      value: contractAddress
-    });
+
+    let setting;
+    const extSetting = await this.settingsService.find({ value: 'contractAddress' });
+    if (extSetting.data.length > 0) {
+      setting = await this.settingsService.patch(extSetting[0]._id, { value: contractAddress });
+    } else {
+      setting = await this.settingsService.create({
+        key: 'contractAddress',
+        value: contractAddress
+      });
+    }
+    
     this.setProgress(0);
     this.setState({
       notificationOpen: true,

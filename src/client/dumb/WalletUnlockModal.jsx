@@ -17,7 +17,7 @@ class WalletUnlockDialog extends React.Component {
       <div>
         <Dialog
           open={this.props.open}
-          onClose={this.handleClose}
+          onClose={this.props.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Unlock Wallet</DialogTitle>
