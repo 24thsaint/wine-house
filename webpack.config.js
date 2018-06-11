@@ -7,6 +7,10 @@ module.exports = {
     path: path.resolve(__dirname, 'public/js'), 
     filename: 'bundle.min.js'
   },
+  node: {
+    fs: 'empty',
+    module: 'empty',
+  },
   module: {
     rules: [
       {

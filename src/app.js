@@ -9,7 +9,7 @@ const feathers = require('@feathersjs/feathers');
 const configuration = require('@feathersjs/configuration');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
-
+const fs = require('fs');
 
 const middleware = require('./middleware');
 const services = require('./services');
@@ -31,8 +31,13 @@ app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
-// Host the public folder
 
+app.get('/eth/contract/get', (request, response) => {
+  const contract = fs.readFileSync(path.resolve('solidity/build/contracts/WineHouse.json'));
+  response.json(contract);
+});
+
+// Host the public folder
 app.use('/', express.static(path.resolve('public')));
 app.use('*', express.static(path.resolve('public')));
 

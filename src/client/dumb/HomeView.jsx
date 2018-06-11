@@ -3,7 +3,6 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 
 import Login from './Login';
-import authenticate from '../authenticator';
 
 class HomeView extends React.Component {
   constructor(props) {
@@ -14,8 +13,7 @@ class HomeView extends React.Component {
   }
 
   async componentDidMount() {
-    const user = await authenticate();
-    if (user) {
+    if (window.localStorage.getItem('feathers-jwt')) {
       window.location.replace(window.location.origin + '/dashboard');
       return;
     }

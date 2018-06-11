@@ -3,26 +3,14 @@ import Grid from '@material-ui/core/Grid';
 import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Button } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import authenticate from '../authenticator';
-import client from '../client';
 import WineRegistrationComponent from '../smart/WineRegistration.smart';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {
-        fullClientName: ''
-      },
       expanded: false
     };
-  }
-
-  async componentDidMount() {
-    await authenticate();
-    this.setState({
-      user: client.get('user')
-    });
   }
 
   handlePanelChange(panelName) {
@@ -46,7 +34,8 @@ class Dashboard extends React.Component {
         direction={'column'}
       >
         <Grid item>
-          <Typography variant="headline">Welcome, {this.state.user.fullClientName}</Typography>
+          <Typography variant="headline">Welcome, {this.props.user.fullClientName}</Typography>
+          <Typography variant="subheading">Balance: {this.props.balance}</Typography>
         </Grid>
         <Grid item>
           <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>
