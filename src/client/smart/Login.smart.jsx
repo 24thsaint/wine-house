@@ -18,10 +18,6 @@ class LoginSmartComponent extends React.Component {
     this.loginAction = this.loginAction.bind(this);
   }
 
-  componenWillMount() {
-    this.inputHelper = new InputHelper(this);
-  }
-
   async loginAction(evt) {
     evt.preventDefault();
     const authenticationDetails = this.state.formData;

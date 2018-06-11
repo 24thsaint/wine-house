@@ -2,7 +2,7 @@
 import client from './client';
 
 async function authenticateSession() {
-  if (!window.localStorage['feathers-jwt']) {
+  if (!window.localStorage['feathers-jwt'] && window.location.pathname !== '/') {
     window.location.replace(window.location.origin);
     return false;
   }
@@ -24,7 +24,7 @@ async function authenticateSession() {
     }
     return userData;
   } catch (e) {
-    window.location.replace(window.location.origin);
+    // window.location.replace(window.location.origin);
     return e;
   }
 }
