@@ -1,24 +1,20 @@
 import React from 'react';
-import { Typography, LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@material-ui/core';
 
 class WalletProgress extends React.Component {
   constructor(props) {
     super(props);
-    this.getProgress = this.getProgress.bind(this);
-  }
-
-  getProgress() {
-    return parseInt(this.props.progress * 100);
   }
 
   render() {
+    const progress = Math.ceil(this.props.progress * 100);
+
     return (
       <div>
         {
           this.props.progress > 0 && this.props.progress < 1 ? 
             <div>
-              <Typography>{this.props.message}</Typography>
-              <LinearProgress color="secondary" variant="determinate" value={this.getProgress()} />
+              <LinearProgress color="secondary" variant="determinate" value={progress} />
             </div> 
             : undefined
         }
@@ -26,7 +22,6 @@ class WalletProgress extends React.Component {
         {
           this.props.progress === 1 ? 
             <div>
-              <Typography>{this.props.message}</Typography>
               <LinearProgress color="secondary" />
             </div> 
             : undefined

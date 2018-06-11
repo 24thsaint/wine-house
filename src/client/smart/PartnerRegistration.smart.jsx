@@ -1,6 +1,6 @@
 import React from 'react';
 import InputHelper from '../helpers/inputHelper';
-import { TextField, Grid, Button } from '@material-ui/core';
+import { TextField, Grid, Button, Typography } from '@material-ui/core';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import EthereumContractClient from '../ethereumContractClient';
 import EthereumWallet from '../ethereumWallet';
@@ -23,8 +23,7 @@ class PartnerRegistration extends React.Component {
     this.inputHelper = new InputHelper(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.setProgress = this.setProgress.bind(this);
+    this.handleWallet = this.handleWallet.bind(this);
 
     this.settingsService = client.service('/api/settings');
   }
@@ -42,21 +41,12 @@ class PartnerRegistration extends React.Component {
     });
   }
 
-  setProgress(progress) {
-    this.setState({
-      progress
-    });
-  }
-
-  async handleSubmit() {
-    this.handleClose();
-    const encryptedWallet = client.get('user').wallet;
+  async handleWallet(wallet) {
     this.setState({
       progressMessage: 'Authorizing...'
     });
-    try {
-      const wallet = await EthereumWallet.unlockWallet(encryptedWallet, this.state.formData.password, this.setProgress);
 
+    try {
       this.setState({
         progressMessage: 'Initializing Contract...'
       });
@@ -71,16 +61,22 @@ class PartnerRegistration extends React.Component {
         progressMessage: 'Waiting for Confirmation...'
       });
       const transaction = await contract.provider.waitForTransaction(result.hash);
+      this.setState({
+        progressMessage: 'SUCCESSFUL!'
+      });
       console.log(transaction);
     } catch (e) {
+      this.setState({
+        progressMessage: 'Failed:' + e.message
+      });
       console.log(e);
     }
-    this.setProgress(0);
   }
 
   render() {
     return (
       <div>
+        <Typography>{this.state.progressMessage}</Typography>
         <form onSubmit={this.handleOpen}>
           <Grid item>
             <TextField
@@ -115,12 +111,8 @@ class PartnerRegistration extends React.Component {
         <WalletUnlockModal 
           open={this.state.open} 
           handleClose={this.handleClose}
-          password={this.state.formData.password} 
-          handleInputChange={this.inputHelper.handleInputChange}
-          handleSubmit={this.handleSubmit}
+          handleWallet={this.handleWallet}
         />
-
-        <WalletProgress progress={this.state.progress} message={this.state.progressMessage} />
       </div>
     );
   }
