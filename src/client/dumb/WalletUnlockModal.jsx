@@ -12,7 +12,7 @@ import EthereumWallet from '../ethereumWallet';
 import WalletProgress from '../dumb/WalletProgress';
 import InputHelper from '../helpers/inputHelper';
 
-class WalletUnlockDialog extends React.Component {
+class WalletUnlockModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -163,4 +163,4 @@ class WalletUnlockDialog extends React.Component {
   }
 }
 
-export default WalletUnlockDialog;
+export default WalletUnlockModal;
