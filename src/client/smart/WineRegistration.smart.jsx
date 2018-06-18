@@ -58,7 +58,7 @@ class WineRegistrationSmartComponent extends React.Component {
   async handleWallet(wallet) {
     const contract = await this.ethereumContractClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
     const { cork, capsule, glass, frontLabel, backLabel, bottle } = this.state.formData;
-    const uniqueIdentifier = SHA256(this.state.formData).toString();
+    const uniqueIdentifier = SHA256(JSON.stringify(this.state.formData)).toString();
 
     console.log(cork, capsule, glass, frontLabel, backLabel, bottle, uniqueIdentifier);
 

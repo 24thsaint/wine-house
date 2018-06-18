@@ -6,6 +6,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import WineRegistrationComponent from '../smart/WineRegistration.smart';
 import PartnerRegistration from '../smart/PartnerRegistration.smart';
 import WineSummary from '../smart/WineSummary.smart';
+import WineVerification from '../smart/WineVerification.smart';
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +75,7 @@ class Dashboard extends React.Component {
               <Typography>Verify Wine</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Typography>Todo Implementation</Typography>
+              <WineVerification />
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <ExpansionPanel
