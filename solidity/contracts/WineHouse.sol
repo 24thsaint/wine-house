@@ -72,6 +72,10 @@ contract WineHouse {
         return wines[_uniqueIdentifier].ownerHistory[_index];
     }
 
+    function getOwnerHistoryCountOf(string _uniqueIdentifier) view public returns (uint count) {
+        return wines[_uniqueIdentifier].ownerHistory.length;
+    }
+
     event NewWineOwner(address _ownerAddress, string _name);
     event NewTrustedPartner(address _partnerAddress, string _name);
     event RemovedTrustedPartner(address _partnerAddress);

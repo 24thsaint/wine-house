@@ -84,6 +84,40 @@ contract('WineHouse', function (accountAddresses) {
     assert.equal(retrievedWine[6], accountAddresses[0]);
   });
 
+  it('Retrieves the owner history count of a wine', async function() {
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
+    await wineHouse.registerWineOwner(accountAddresses[1], 'Tristan Macadangdang');
+
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    wineData.uniqueIdentifier = uniqueIdentifier;
+    await wineHouse.createWine(
+      wineData.cork,
+      wineData.capsule,
+      wineData.glass,
+      wineData.frontLabel,
+      wineData.backLabel,
+      wineData.bottle,
+      uniqueIdentifier
+    );
+
+    const historyCountZero = await wineHouse.getOwnerHistoryCountOf(uniqueIdentifier);
+    assert.equal(historyCountZero.toNumber(), 0);
+
+    await wineHouse.transferWine(accountAddresses[1], uniqueIdentifier);
+
+    const historyCount = await wineHouse.getOwnerHistoryCountOf(uniqueIdentifier);
+    assert.equal(historyCount.toNumber(), 1);
+  });
+
   it('Transfers a wine from an owner to an address', async function () {
     await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
     await wineHouse.registerWineOwner(accountAddresses[1], 'Pia Bonilla');
