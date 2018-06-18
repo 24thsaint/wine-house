@@ -16,8 +16,8 @@ class Setting {
   async set(key, value) {
     let setting;
     const existingSetting = await this.settingService.find({ key });
-    if (existingSetting.length > 0) {
-      setting = await this.settingService.patch(existingSetting[0]._id, {value});
+    if (existingSetting.total > 0) {
+      setting = await this.settingService.patch(existingSetting.data[0]._id, {value});
     } else {
       setting = await this.settingService.create({key, value});
     }
