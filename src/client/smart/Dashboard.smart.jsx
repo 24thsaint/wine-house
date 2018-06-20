@@ -5,6 +5,7 @@ import { Grid, Divider } from '@material-ui/core';
 import authenticate from '../authenticator';
 import client from '../client';
 import EthereumContract from '../ethereumContractClient';
+import WineGallery from './WineGallery';
 
 class DashboardSmartComponent extends React.Component {
   constructor(props) {
@@ -46,6 +47,8 @@ class DashboardSmartComponent extends React.Component {
           balance={this.state.balance} 
           history={this.props.history} 
         />
+        <Divider style={{ marginTop: '10px', marginBottom: '10px' }}/>
+        <WineGallery />
       </Grid>
     );
   }

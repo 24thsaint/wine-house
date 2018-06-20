@@ -28,14 +28,6 @@ class Dashboard extends React.Component {
         <Grid item>
           <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>
         </Grid>
-        <Grid item>
-          <Divider style={{ marginTop: '10px', marginBottom: '10px' }}/>
-        </Grid>
-        <Grid item>
-          Navigate to continue...
-          <br />
-          ** Insert Wine Gallery **
-        </Grid>
       </Grid>
     );
   }
