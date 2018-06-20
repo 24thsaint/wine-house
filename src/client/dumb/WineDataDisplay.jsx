@@ -38,12 +38,16 @@ class WineDataDisplay extends React.Component {
         </Table>
 
         {this.props.wine.ownerHistoryCount > 0 ? 
-          <div><Typography>This wine was preivously owned by:</Typography>
+          <div>
+            <Typography>This wine was previously owned by:</Typography>
             {
               this.props.wine.ownerHistory.map(owner => (
-                <Typography key={owner.address}>{owner.address} - {owner.name}</Typography>
+                <div key={owner.address}>
+                  {owner.address} - {owner.name}
+                </div>
               ))
-            }</div>
+            }
+          </div>
           : <Typography>This wine has not been transferred, yet!</Typography>
         }
 
