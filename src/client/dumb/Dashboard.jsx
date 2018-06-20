@@ -7,6 +7,7 @@ import WineRegistrationComponent from '../smart/WineRegistration.smart';
 import PartnerRegistration from '../smart/PartnerRegistration.smart';
 import WineSummary from '../smart/WineSummary.smart';
 import WineVerification from '../smart/WineVerification.smart';
+import TransferWine from '../smart/TransferWine.smart';
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -76,6 +77,17 @@ class Dashboard extends React.Component {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <WineVerification />
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel
+            expanded={expanded === 'transferWinePanel'}
+            onChange={() => { this.handlePanelChange('transferWinePanel'); }}
+          >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Transfer Wine</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <TransferWine />
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <ExpansionPanel
