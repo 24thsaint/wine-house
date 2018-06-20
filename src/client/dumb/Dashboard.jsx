@@ -1,25 +1,10 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Button } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Typography, Button, Divider } from '@material-ui/core';
 
-import WineRegistrationComponent from '../smart/WineRegistration.smart';
-import PartnerRegistration from '../smart/PartnerRegistration.smart';
-import WineSummary from '../smart/WineSummary.smart';
-import WineVerification from '../smart/WineVerification.smart';
-import TransferWine from '../smart/TransferWine.smart';
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
-
-  handlePanelChange(panelName) {
-    this.setState({
-      expanded: !this.state.expanded ? panelName : false
-    });
   }
 
   navigate(route) {
@@ -27,8 +12,6 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { expanded } = this.state;
-
     return (
       <Grid
         container
@@ -45,62 +28,13 @@ class Dashboard extends React.Component {
         <Grid item>
           <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>
         </Grid>
-        <Grid item style={{ width: '100%' }}>
-          <ExpansionPanel
-            expanded={expanded === 'wineRegistrationPanel'}
-            onChange={() => { this.handlePanelChange('wineRegistrationPanel'); }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Register a Wine</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <WineRegistrationComponent />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel
-            expanded={expanded === 'partnerRegistrationPanel'}
-            onChange={() => { this.handlePanelChange('partnerRegistrationPanel'); }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Register a Partner</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <PartnerRegistration />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel
-            expanded={expanded === 'verifyWinePanel'}
-            onChange={() => { this.handlePanelChange('verifyWinePanel'); }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Verify Wine</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <WineVerification />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel
-            expanded={expanded === 'transferWinePanel'}
-            onChange={() => { this.handlePanelChange('transferWinePanel'); }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Transfer Wine</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <TransferWine />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel
-            expanded={expanded === 'summaryPanel'}
-            onChange={() => { this.handlePanelChange('summaryPanel'); }}
-          >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Wine Summary</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <WineSummary />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+        <Grid item>
+          <Divider style={{ marginTop: '10px', marginBottom: '10px' }}/>
+        </Grid>
+        <Grid item>
+          Navigate to continue...
+          <br />
+          ** Insert Wine Gallery **
         </Grid>
       </Grid>
     );

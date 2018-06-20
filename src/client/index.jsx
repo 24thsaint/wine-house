@@ -16,6 +16,10 @@ import GlobalAppBar from './dumb/GlobalAppBar';
 import WineRegistrationComponent from './smart/WineRegistration.smart';
 import DashboardSmartComponent from './smart/Dashboard.smart';
 import WalletImportSmartComponent from './smart/WalletImport.smart';
+import PartnerRegistration from './smart/PartnerRegistration.smart';
+import WineVerificationSmartComponent from './smart/WineVerification.smart';
+import TransferWineSmartComponent from './smart/TransferWine.smart';
+import AdminTools from './smart/AdminTools.smart';
 
 const theme = createMuiTheme({
   palette: {
@@ -47,9 +51,13 @@ const Index = () => (
               <Switch>
                 <Route exact path="/" component={LoginComponent} />
                 <Route path="/register" component={RegistrationComponent} />
-                <Route path="/wine-registration" component={WineRegistrationComponent} />
+                <Route path="/wine/register" component={WineRegistrationComponent} />
+                <Route path="/wine/verify" component={WineVerificationSmartComponent} />
+                <Route path="/wine/transfer" component={TransferWineSmartComponent} />
+                <Route path="/admin/tools" component={AdminTools} />
                 <Route path="/dashboard" component={DashboardSmartComponent} />
                 <Route path="/import-wallet" component={WalletImportSmartComponent} />
+                <Route path="/partner/register" component={PartnerRegistration} />
                 <Route component={Error404} />
               </Switch>
             </Grid>

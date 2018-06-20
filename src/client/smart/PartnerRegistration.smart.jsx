@@ -1,6 +1,6 @@
 import React from 'react';
 import InputHelper from '../helpers/inputHelper';
-import { TextField, Grid, Button, Typography } from '@material-ui/core';
+import { TextField, Grid, Button, Typography, Paper } from '@material-ui/core';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import EthereumContractClient from '../ethereumContractClient';
 import EthereumWallet from '../ethereumWallet';
@@ -75,45 +75,53 @@ class PartnerRegistration extends React.Component {
 
   render() {
     return (
-      <div>
+      <Grid
+        container
+        alignItems={'center'}
+        justify={'center'}
+        direction={'column'}
+      >
+        <h1>Partner Registration</h1>
         <Typography>{this.state.progressMessage}</Typography>
-        <form onSubmit={this.handleOpen}>
-          <Grid item>
-            <TextField
-              name="partnerAddress"
-              id="partnerAddress"
-              label="Partner Address"
-              value={this.state.formData.partnerAddress}
-              onChange={this.inputHelper.handleInputChange}
-            />
-          </Grid>
-          <Grid item>
-            <TextField
-              name="partnerName"
-              id="partnerName"
-              label="Partner Name"
-              value={this.state.formData.partnerName}
-              onChange={this.inputHelper.handleInputChange}
-              margin="normal"
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-            >
+        <Paper style={{ padding: 20 }} elevation={5}>
+          <form onSubmit={this.handleOpen}>
+            <Grid item>
+              <TextField
+                name="partnerAddress"
+                id="partnerAddress"
+                label="Partner Address"
+                value={this.state.formData.partnerAddress}
+                onChange={this.inputHelper.handleInputChange}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                name="partnerName"
+                id="partnerName"
+                label="Partner Name"
+                value={this.state.formData.partnerName}
+                onChange={this.inputHelper.handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
                 Submit
-            </Button>
-          </Grid>
-        </form>
+              </Button>
+            </Grid>
+          </form>
+        </Paper>
 
         <WalletUnlockModal 
           open={this.state.open} 
           handleClose={this.handleClose}
           handleWallet={this.handleWallet}
         />
-      </div>
+      </Grid>
     );
   }
 }

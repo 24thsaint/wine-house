@@ -46,8 +46,6 @@ class DashboardSmartComponent extends React.Component {
           balance={this.state.balance} 
           history={this.props.history} 
         />
-        <Divider style={{ marginTop: '10px', marginBottom: '10px' }}/>
-        <AdminTools />
       </Grid>
     );
   }
