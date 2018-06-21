@@ -3,7 +3,8 @@ import EthereumContractClient from '../ethereumContractClient';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
 import WineGalleryItem from '../dumb/WineGalleryItem';
-import { Typography } from '@material-ui/core';
+import { Typography, Badge, Grid } from '@material-ui/core';
+import { Collections } from '@material-ui/icons';
 
 class WineGallery extends React.Component {
   constructor(props) {
@@ -50,15 +51,20 @@ class WineGallery extends React.Component {
 
   render() {
     return (
-      <div>
-        <Typography variant="title">Wine Gallery ({this.state.wines.length})</Typography>
-        <Typography variant="caption">These are the wines you own...</Typography>
+      <Grid item>
+        <Typography variant="title" align="center">
+            Wine Gallery 
+          <Badge badgeContent={this.state.wines.length} color="primary">
+            <Collections style={{marginLeft: 10}} />
+          </Badge>
+        </Typography>
+        <Typography variant="caption" align="center">These are the wines you own...</Typography>
         {
           this.state.wines.map(wine => (
             <WineGalleryItem key={wine.key} wine={wine} />
           ))
         }
-      </div>
+      </Grid>
     );
   }
 }

@@ -115,7 +115,17 @@ class GlobalAppBar extends React.Component {
                 <ListItemText primary="Register Partner" />
               </ListItem>
             </Link>
+            <Link to="/owner/register">
+              <ListItem button>
+                <ListItemIcon>
+                  <GroupAdd />
+                </ListItemIcon>
+                <ListItemText primary="Register Owner" />
+              </ListItem>
+            </Link>
+
             <Divider />
+
             <Link to="/admin/tools">
               <ListItem button>
                 <ListItemIcon>

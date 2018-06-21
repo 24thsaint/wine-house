@@ -6,7 +6,6 @@ import EthereumContractClient from '../ethereumContractClient';
 import StatusDialog from '../dumb/StatusDialog';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
-import { Transition } from 'react-transition-group';
 
 const ethereumContractClient = new EthereumContractClient();
 
@@ -23,7 +22,7 @@ class PartnerRegistration extends React.Component {
       dialog: {
         open: false,
         isDone: false,
-        title: 'Wine Registration',
+        title: 'Partner Registration',
         message: ''
       },
       contractAddress: ''
