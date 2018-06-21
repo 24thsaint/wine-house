@@ -79,6 +79,7 @@ class WineRegistrationSmartComponent extends React.Component {
           open={this.state.open}
           handleClose={this.handleClose}
           handleWallet={this.handleWallet}
+          autoClose={false}
         />
       </div>
     );

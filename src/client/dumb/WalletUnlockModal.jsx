@@ -53,6 +53,9 @@ class WalletUnlockModal extends React.Component {
     try {
       const unlockedWallet = await EthereumWallet.unlockWallet(wallet, this.state.formData.password, this.progressHandler);
       this.props.handleWallet(unlockedWallet);
+      if (this.props.autoClose) {
+        this.handleClose();
+      }
     } catch (e) {
       this.setState({
         progressStage: 3,
