@@ -6,6 +6,7 @@ import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import EthereumContractClient from '../ethereumContractClient';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
+import StatusDialog from '../dumb/StatusDialog';
 
 class WineRegistrationSmartComponent extends React.Component {
   constructor(props) {
@@ -19,7 +20,13 @@ class WineRegistrationSmartComponent extends React.Component {
         backLabel: '',
         bottle: ''
       },
-      open: false
+      open: false,
+      dialog: {
+        open: false,
+        isDone: false,
+        title: 'Wine Registration',
+        message: ''
+      }
     };
     this.inputHelper = new InputHelper(this);
     this.ethereumContractClient = new EthereumContractClient();
@@ -28,6 +35,7 @@ class WineRegistrationSmartComponent extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleWallet = this.handleWallet.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
   }
 
   async componentDidMount() {
@@ -49,6 +57,14 @@ class WineRegistrationSmartComponent extends React.Component {
     });
   }
 
+  handleDialogClose() {
+    const dialog = this.state.dialog;
+    dialog.open = false;
+    this.setState({
+      dialog
+    });
+  }
+
   handleOpen() {
     this.setState({
       open: true
@@ -56,15 +72,30 @@ class WineRegistrationSmartComponent extends React.Component {
   }
 
   async handleWallet(wallet) {
+    const dialog = this.state.dialog;
+
+    dialog.open = true;
+    dialog.message = 'Initializing Contract...';
+    this.setState({
+      dialog
+    });
     const contract = await this.ethereumContractClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
     const { cork, capsule, glass, frontLabel, backLabel, bottle } = this.state.formData;
     const uniqueIdentifier = SHA256(JSON.stringify(this.state.formData)).toString();
 
-    console.log(cork, capsule, glass, frontLabel, backLabel, bottle, uniqueIdentifier);
+    dialog.message = 'Creating wine...';
+    this.setState({
+      dialog
+    });
 
     const transaction = await contract.createWine(cork, capsule, glass, frontLabel, backLabel, bottle, uniqueIdentifier);
-    const confirmation = await contract.provider.waitForTransaction(transaction.hash);
-    console.log(confirmation);
+    await contract.provider.waitForTransaction(transaction.hash);
+    
+    dialog.message = 'Wine created!\nUnique identifier: ' + uniqueIdentifier;
+    dialog.isDone = true;
+    this.setState({
+      dialog
+    });
   }
 
   render() {
@@ -79,8 +110,9 @@ class WineRegistrationSmartComponent extends React.Component {
           open={this.state.open}
           handleClose={this.handleClose}
           handleWallet={this.handleWallet}
-          autoClose={false}
+          autoClose={true}
         />
+        <StatusDialog dialog={this.state.dialog} handleDialogClose={this.handleDialogClose} />
       </div>
     );
   }

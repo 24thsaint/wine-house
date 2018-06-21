@@ -54,36 +54,30 @@ class TransferWineSmartComponent extends React.Component {
   }
 
   handleDialogClose() {
+    const dialog = this.state.dialog;
+    dialog.open = false;
     this.setState({
-      dialog: {
-        open: false
-      }
+      dialog
     });
   }
 
   async handleWallet(wallet) {
-    let dialog = this.state.dialog;
+    const dialog = this.state.dialog;
 
     dialog.open = true;
-    dialog.message = 'Loading contract...';
+    dialog.message = 'Initializing Contract...';
     this.setState({
       dialog
     });
 
     const contract = await this.ethereumClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
 
-    dialog.message = 'Contract loaded!';
-    this.setState({
-      dialog
-    });
-
-    const transaction = await contract.transferWine(this.state.formData.newOwner, this.state.formData.transferWineIdentifier);
-
     dialog.message = 'Transferring wine...';
     this.setState({
       dialog
     });
 
+    const transaction = await contract.transferWine(this.state.formData.newOwner, this.state.formData.transferWineIdentifier);
     await contract.provider.waitForTransaction(transaction.hash);
 
     dialog.isDone = true;

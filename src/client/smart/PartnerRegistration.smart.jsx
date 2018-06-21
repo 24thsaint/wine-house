@@ -1,11 +1,12 @@
 import React from 'react';
 import InputHelper from '../helpers/inputHelper';
-import { TextField, Grid, Button, Typography, Paper } from '@material-ui/core';
+import { TextField, Grid, Button, Paper } from '@material-ui/core';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import EthereumContractClient from '../ethereumContractClient';
-import EthereumWallet from '../ethereumWallet';
-import WalletProgress from '../dumb/WalletProgress';
-import client from '../client';
+import StatusDialog from '../dumb/StatusDialog';
+import settings from '../helpers/settings';
+import authenticate from '../authenticator';
+import { Transition } from 'react-transition-group';
 
 const ethereumContractClient = new EthereumContractClient();
 
@@ -18,19 +19,41 @@ class PartnerRegistration extends React.Component {
         partnerName: '',
         password: ''
       },
-      open: false
+      open: false,
+      dialog: {
+        open: false,
+        isDone: false,
+        title: 'Wine Registration',
+        message: ''
+      },
+      contractAddress: ''
     };
     this.inputHelper = new InputHelper(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleWallet = this.handleWallet.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+  }
 
-    this.settingsService = client.service('/api/settings');
+  async componentDidMount() {
+    await authenticate();
+    const contractAddress = await settings.get('contractAddress');
+    this.setState({
+      contractAddress
+    });
   }
 
   handleClose() {
     this.setState({
       open: false
+    });
+  }
+
+  handleDialogClose() {
+    const dialog = this.state.dialog;
+    dialog.open = false;
+    this.setState({
+      dialog
     });
   }
 
@@ -42,33 +65,30 @@ class PartnerRegistration extends React.Component {
   }
 
   async handleWallet(wallet) {
-    this.setState({
-      progressMessage: 'Authorizing...'
-    });
+    const dialog = this.state.dialog;
 
     try {
+      dialog.open = true;
+      dialog.message = 'Initializing Contract...';
       this.setState({
-        progressMessage: 'Initializing Contract...'
+        dialog
       });
-      const settings = await this.settingsService.find({ key: 'contractAddress' });
-      const contractAddress = settings.data[0].value;
+      const contractAddress = this.state.contractAddress;
       const contract = await ethereumContractClient.loadContractPrivate(contractAddress, wallet.privateKey);
+      
+      dialog.message = 'Registering Trusted Partner...';
       this.setState({
-        progressMessage: 'Sending Transaction...'
+        dialog
       });
       const result = await contract.addTrustedPartner(this.state.formData.partnerAddress, this.state.formData.partnerName);
+      await contract.provider.waitForTransaction(result.hash);
+
+      dialog.isDone = true;
+      dialog.message = 'Partner successfully registered!';
       this.setState({
-        progressMessage: 'Waiting for Confirmation...'
+        dialog
       });
-      const transaction = await contract.provider.waitForTransaction(result.hash);
-      this.setState({
-        progressMessage: 'SUCCESSFUL!'
-      });
-      console.log(transaction);
     } catch (e) {
-      this.setState({
-        progressMessage: 'Failed:' + e.message
-      });
       console.log(e);
     }
   }
@@ -82,7 +102,6 @@ class PartnerRegistration extends React.Component {
         direction={'column'}
       >
         <h1>Partner Registration</h1>
-        <Typography>{this.state.progressMessage}</Typography>
         <Paper style={{ padding: 20 }} elevation={5}>
           <form onSubmit={this.handleOpen}>
             <Grid item>
@@ -120,7 +139,10 @@ class PartnerRegistration extends React.Component {
           open={this.state.open} 
           handleClose={this.handleClose}
           handleWallet={this.handleWallet}
+          autoClose={true}
         />
+
+        <StatusDialog dialog={this.state.dialog} handleDialogClose={this.handleDialogClose} />
       </Grid>
     );
   }
