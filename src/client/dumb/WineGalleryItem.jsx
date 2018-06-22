@@ -7,7 +7,7 @@ class WineGalleryItem extends React.Component {
 
     return (
       <div>
-        <Paper style={{margin: 10}}>
+        <Paper style={{margin: 10, padding: 20}}>
           <Typography variant="subheading">Wine ID: {wine.key}</Typography>
           <Typography>Back Label: {wine.backLabel}</Typography>
           <Typography>Front Label: {wine.frontLabel}</Typography>

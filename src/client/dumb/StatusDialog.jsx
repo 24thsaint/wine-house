@@ -6,6 +6,7 @@ class StatusDialog extends React.Component {
   render() {
     return (
       <Dialog
+        disableBackdropClick={true}
         open={this.props.dialog.open}
         onClose={this.props.handleDialogClose}
         aria-labelledby="alert-dialog-title"
@@ -23,9 +24,13 @@ class StatusDialog extends React.Component {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleDialogClose} color="primary" autoFocus>
-            Ok
-          </Button>
+          {
+            this.props.dialog.isDone ? 
+              <Button onClick={this.props.handleDialogClose} color="primary" autoFocus>
+                Ok
+              </Button>
+              : undefined
+          }
         </DialogActions>
       </Dialog>
     );

@@ -14,8 +14,8 @@ class PartnerRegistration extends React.Component {
     super(props);
     this.state = {
       formData: {
-        partnerAddress: '',
-        partnerName: '',
+        partnerAddress: this.props.partnerAddress || '',
+        partnerName: this.props.partnerName || '',
         password: ''
       },
       open: false,
@@ -54,6 +54,9 @@ class PartnerRegistration extends React.Component {
     this.setState({
       dialog
     });
+    if (this.props.executeCloseCallback) {
+      this.props.executeCloseCallback();
+    }
   }
 
   handleOpen(evt) {
@@ -81,6 +84,9 @@ class PartnerRegistration extends React.Component {
       });
       const result = await contract.addTrustedPartner(this.state.formData.partnerAddress, this.state.formData.partnerName);
       await contract.provider.waitForTransaction(result.hash);
+      if (this.props.executeSaveCallback) {
+        await this.props.executeSaveCallback(true, this.props.requestId);
+      }
 
       dialog.isDone = true;
       dialog.message = 'Partner successfully registered!';

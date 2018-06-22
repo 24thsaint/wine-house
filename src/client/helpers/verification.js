@@ -7,6 +7,7 @@ class Verification {
 
   async save(data) {
     data.isPending = true;
+    data.isAccepted = false;
     return await this.service.create(data);
   }
 
@@ -22,10 +23,10 @@ class Verification {
         $skip: page * limit
       },
     });
-    return result;
+    return result.data;
   }
 
-  async verify(id) {
+  async accept(id) {
     const result = await this.service.find({
       query: {
         _id: id,
@@ -33,7 +34,18 @@ class Verification {
       }
     });
     const pendingVerification = result.data[0];
-    return await this.service.patch(pendingVerification._id, {isPending: false});
+    return await this.service.patch(pendingVerification._id, {isPending: false, isAccepted: true});
+  }
+
+  async reject(id) {
+    const result = await this.service.find({
+      query: {
+        _id: id,
+        isPending: true
+      }
+    });
+    const pendingVerification = result.data[0];
+    return await this.service.patch(pendingVerification._id, {isPending: false, isAccepted: false});
   }
 }
 

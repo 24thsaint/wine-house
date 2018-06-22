@@ -80,6 +80,7 @@ class WalletUnlockModal extends React.Component {
     return (
       <div>
         <Dialog
+          disableBackdropClick={true}
           open={this.props.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
