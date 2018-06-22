@@ -20,7 +20,8 @@ contract('WineHouse', function (accountAddresses) {
   it('Registers a partner', async function () {
     const partnerAccount = accountAddresses[1];
     const partnerName = 'SM City Supermarket, Iloilo';
-    await wineHouse.addTrustedPartner(partnerAccount, partnerName);
+    const identityHash = faker.random.alphaNumeric(32);
+    await wineHouse.addTrustedPartner(partnerAccount, partnerName, identityHash);
     const partnerResponse = await wineHouse.getTrustedPartner(partnerAccount);
     assert.equal(partnerAccount, partnerResponse[0]);
     assert.equal(true, partnerResponse[1]);
@@ -29,7 +30,8 @@ contract('WineHouse', function (accountAddresses) {
   it('Removes a registered partner', async function () {
     const partnerAccount = accountAddresses[1];
     const partnerName = 'SM City Supermarket, Iloilo';
-    await wineHouse.addTrustedPartner(partnerAccount, partnerName);
+    const identityHash = faker.random.alphaNumeric(32);
+    await wineHouse.addTrustedPartner(partnerAccount, partnerName, identityHash);
     const partnerResponse = await wineHouse.getTrustedPartner(partnerAccount);
     assert.equal(partnerAccount, partnerResponse[0]);
     assert.equal(true, partnerResponse[1]);
@@ -41,7 +43,8 @@ contract('WineHouse', function (accountAddresses) {
 
   it('Registers a wine owner', async function () {
     const ownerName = 'Rave Arevalo';
-    await wineHouse.registerWineOwner(accountAddresses[1], ownerName);
+    const identityHash = faker.random.alphaNumeric(32);
+    await wineHouse.registerWineOwner(accountAddresses[1], ownerName, identityHash);
     const wineOwnerResponse = await wineHouse.getWineOwner(accountAddresses[1]);
 
     assert.equal(accountAddresses[1], wineOwnerResponse[0]);
@@ -50,7 +53,7 @@ contract('WineHouse', function (accountAddresses) {
   });
 
   it('Creates a new wine', async function () {
-    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
 
     const wineData = {
       cork: faker.random.words(5),
@@ -85,8 +88,8 @@ contract('WineHouse', function (accountAddresses) {
   });
 
   it('Retrieves the owner history count of a wine', async function() {
-    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
-    await wineHouse.registerWineOwner(accountAddresses[1], 'Tristan Macadangdang');
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
+    await wineHouse.registerWineOwner(accountAddresses[1], 'Tristan Macadangdang', faker.random.alphaNumeric(32));
 
     const wineData = {
       cork: faker.random.words(5),
@@ -119,8 +122,8 @@ contract('WineHouse', function (accountAddresses) {
   });
 
   it('Transfers a wine from an owner to an address', async function () {
-    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
-    await wineHouse.registerWineOwner(accountAddresses[1], 'Pia Bonilla');
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
+    await wineHouse.registerWineOwner(accountAddresses[1], 'Pia Bonilla', faker.random.alphaNumeric(32));
 
     const wineData = {
       cork: faker.random.words(5),
@@ -152,7 +155,7 @@ contract('WineHouse', function (accountAddresses) {
   });
 
   it('Should retrieve a wine count of 2', async function() {
-    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
 
     const wineData1 = {
       cork: faker.random.words(5),
@@ -201,7 +204,7 @@ contract('WineHouse', function (accountAddresses) {
   });
 
   it('Should return the correct wine identifier from the collection of a wine owner', async function() {
-    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo');
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
 
     const wineData = {
       cork: faker.random.words(5),
@@ -227,5 +230,172 @@ contract('WineHouse', function (accountAddresses) {
 
     const result = await wineHouse.getWineIdentifierAt(accountAddresses[0], 0);
     assert(result, uniqueIdentifier);
+  });
+
+  it('Should disallow transfer of unowned wine', async function() {
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
+    await wineHouse.registerWineOwner(accountAddresses[1], 'Pia Bonilla', faker.random.alphaNumeric(32));
+
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    wineData.uniqueIdentifier = uniqueIdentifier;
+    await wineHouse.createWine(
+      wineData.cork,
+      wineData.capsule,
+      wineData.glass,
+      wineData.frontLabel,
+      wineData.backLabel,
+      wineData.bottle,
+      uniqueIdentifier
+    );
+
+    try {
+      await wineHouse.transferWine(accountAddresses[0], uniqueIdentifier, {from: accountAddresses[1]});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow wine creation from an untrusted partner', async function() {
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    wineData.uniqueIdentifier = uniqueIdentifier;
+    try {
+      await wineHouse.createWine(
+        wineData.cork,
+        wineData.capsule,
+        wineData.glass,
+        wineData.frontLabel,
+        wineData.backLabel,
+        wineData.bottle,
+        uniqueIdentifier
+      );
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow trusted partner registration from a non-master', async function() {
+    const partnerAccount = accountAddresses[1];
+    const partnerName = 'SM City Supermarket, Iloilo';
+    const identityHash = faker.random.alphaNumeric(32);
+    try {
+      await wineHouse.addTrustedPartner(partnerAccount, partnerName, identityHash, {from: accountAddresses[2]});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow wine owner registration from a non-master', async function () {
+    const ownerName = 'Rave Arevalo';
+    const identityHash = faker.random.alphaNumeric(32);
+    try {
+      await wineHouse.registerWineOwner(accountAddresses[1], ownerName, identityHash, {from: accountAddresses[1]});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow removal of a trusted partner from a non-master', async function() {
+    const partnerAccount = accountAddresses[1];
+    const partnerName = 'SM City Supermarket, Iloilo';
+    const identityHash = faker.random.alphaNumeric(32);
+    await wineHouse.addTrustedPartner(partnerAccount, partnerName, identityHash);
+    const partnerResponse = await wineHouse.getTrustedPartner(partnerAccount);
+    assert.equal(partnerAccount, partnerResponse[0]);
+    assert.equal(true, partnerResponse[1]);
+    try {
+      await wineHouse.removeTrustedPartner(accountAddresses[1], {from: accountAddresses[2]});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow creation of a new wine with duplicate unique identifier', async function () {
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
+
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    wineData.uniqueIdentifier = uniqueIdentifier;
+    await wineHouse.createWine(
+      wineData.cork,
+      wineData.capsule,
+      wineData.glass,
+      wineData.frontLabel,
+      wineData.backLabel,
+      wineData.bottle,
+      uniqueIdentifier
+    );
+
+    try {
+      await wineHouse.createWine(
+        wineData.cork,
+        wineData.capsule,
+        wineData.glass,
+        wineData.frontLabel,
+        wineData.backLabel,
+        wineData.bottle,
+        uniqueIdentifier
+      );
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
+  it('Should disallow transfer of wine from an unverified owner', async function() {
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));    
+
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    wineData.uniqueIdentifier = uniqueIdentifier;
+    await wineHouse.createWine(
+      wineData.cork,
+      wineData.capsule,
+      wineData.glass,
+      wineData.frontLabel,
+      wineData.backLabel,
+      wineData.bottle,
+      uniqueIdentifier
+    );
+
+    await wineHouse.transferWine(accountAddresses[1], uniqueIdentifier);
+
+    try {
+      await wineHouse.transferWine(accountAddresses[2], uniqueIdentifier, {from: accountAddresses[1]});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
   });
 });
