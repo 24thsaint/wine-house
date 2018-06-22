@@ -5,6 +5,7 @@ import authenticate from '../authenticator';
 import { Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import PartnerRegistration from './PartnerRegistration.smart';
 import OwnerRegistration from './OwnerRegistration.smart';
+import client from '../client';
 
 class ViewVerificationsSmartComponent extends React.Component {
   constructor(props) {
@@ -42,6 +43,14 @@ class ViewVerificationsSmartComponent extends React.Component {
   async executeSave(status, id) {
     if (status) {
       await this.verificationsHelper.accept(id);
+      const result = await this.verificationsHelper.find(id);
+      const queryResult = await client.service('/api/users').find({
+        query: {
+          address: result.userAddress
+        }
+      });
+      const userResult = queryResult.data[0];
+      await client.service('/api/users').patch(userResult._id, {status: result.applicationType});
     }
   }
 

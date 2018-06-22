@@ -33,8 +33,6 @@ class AdminTools extends React.Component {
 
     this.ethereumContract = new EthereumContract();
     this.inputHelper = new InputHelper(this);
-
-    this.settingsService = client.service('/api/settings');
   }
 
   async deployContract() {
@@ -71,6 +69,8 @@ class AdminTools extends React.Component {
     const contractAddress = await this.ethereumContract.deployContract(wallet.privateKey, this.setDeployProgressMessage);
 
     let setting = await settings.set('contractAddress', contractAddress);
+    const user = client.get('user');
+    await client.service('/api/users').patch(user._id, {status: 'master'});
 
     this.setState({
       notificationOpen: true,

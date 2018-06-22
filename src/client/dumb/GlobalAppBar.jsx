@@ -16,13 +16,22 @@ class GlobalAppBar extends React.Component {
     super(props);
     this.state = {
       authenticated: false,
-      open: false
+      open: false,
+      user: {
+        status: 'unverified'
+      }
     };
 
-    client.on('authenticated', function(evt) {
+    client.on('authenticated', async function(evt) {
       if (evt.accessToken) {
         this.setState({
           authenticated: true
+        });
+
+        const payload = await client.passport.verifyJWT(evt.accessToken);
+        const user = await client.service('/api/users').get(payload.userId);
+        this.setState({
+          user
         });
       }
     }.bind(this));
@@ -34,7 +43,7 @@ class GlobalAppBar extends React.Component {
     const user = await authenticate();
     if (user.code === 401) {
       this.setState({
-        authenticated: false
+        authenticated: false,
       });
     }
   }
@@ -51,6 +60,8 @@ class GlobalAppBar extends React.Component {
   }
 
   render() {
+    let user = this.state.user;
+
     return (
       <div>
         <AppBar position="static">
@@ -83,30 +94,46 @@ class GlobalAppBar extends React.Component {
                 <ListItemText primary="Home" />
               </ListItem>
             </Link>
-            <Link to="/verify">
-              <ListItem button>
-                <ListItemIcon>
-                  <Star />
-                </ListItemIcon>
-                <ListItemText primary="Upgrade Account" />
-              </ListItem>
-            </Link>
-            <Link to="/view/verifications">
-              <ListItem button>
-                <ListItemIcon>
-                  <Assessment />
-                </ListItemIcon>
-                <ListItemText primary="Verification Requests" />
-              </ListItem>
-            </Link>
-            <Link to="/wine/register">
-              <ListItem button>
-                <ListItemIcon>
-                  <LibraryAdd />
-                </ListItemIcon>
-                <ListItemText primary="Register Wine" />
-              </ListItem>
-            </Link>
+
+            {
+              user.status === 'unverified' ?
+                <Link to="/verify">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Star />
+                    </ListItemIcon>
+                    <ListItemText primary="Upgrade Account" />
+                  </ListItem>
+                </Link>
+                : undefined
+            }
+
+            {
+              user.status === 'master' ?
+                <Link to="/view/verifications">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Assessment />
+                    </ListItemIcon>
+                    <ListItemText primary="Verification Requests" />
+                  </ListItem>
+                </Link>
+                : undefined
+            }
+
+            {
+              user.status === 'partner' || user.status === 'master' ?
+                <Link to="/wine/register">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <LibraryAdd />
+                    </ListItemIcon>
+                    <ListItemText primary="Register Wine" />
+                  </ListItem>
+                </Link>
+                : undefined
+            }
+
             <Link to="/wine/verify">
               <ListItem button>
                 <ListItemIcon>
@@ -115,41 +142,53 @@ class GlobalAppBar extends React.Component {
                 <ListItemText primary="Verify Wine" />
               </ListItem>
             </Link>
-            <Link to="/wine/transfer">
-              <ListItem button>
-                <ListItemIcon>
-                  <Send />
-                </ListItemIcon>
-                <ListItemText primary="Transfer Wine" />
-              </ListItem>
-            </Link>
-            <Link to="/partner/register">
-              <ListItem button>
-                <ListItemIcon>
-                  <GroupAdd />
-                </ListItemIcon>
-                <ListItemText primary="Register Partner" />
-              </ListItem>
-            </Link>
-            <Link to="/owner/register">
-              <ListItem button>
-                <ListItemIcon>
-                  <GroupAdd />
-                </ListItemIcon>
-                <ListItemText primary="Register Owner" />
-              </ListItem>
-            </Link>
 
-            <Divider />
+            {
+              user.status === 'partner' || user.status === 'owner' ?
+                <Link to="/wine/transfer">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Send />
+                    </ListItemIcon>
+                    <ListItemText primary="Transfer Wine" />
+                  </ListItem>
+                </Link>
+                : undefined
+            }
 
-            <Link to="/admin/tools">
-              <ListItem button>
-                <ListItemIcon>
-                  <Settings />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
+            {
+              user.status === 'master' ? 
+                <div>
+                  <Link to="/partner/register">
+                    <ListItem button>
+                      <ListItemIcon>
+                        <GroupAdd />
+                      </ListItemIcon>
+                      <ListItemText primary="Register Partner" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/owner/register">
+                    <ListItem button>
+                      <ListItemIcon>
+                        <GroupAdd />
+                      </ListItemIcon>
+                      <ListItemText primary="Register Owner" />
+                    </ListItem>
+                  </Link>
+
+                  <Divider />
+
+                  <Link to="/admin/tools">
+                    <ListItem button>
+                      <ListItemIcon>
+                        <Settings />
+                      </ListItemIcon>
+                      <ListItemText primary="Settings" />
+                    </ListItem>
+                  </Link>
+                </div>
+                : undefined
+            }
           </div>
         </Drawer>
       </div>

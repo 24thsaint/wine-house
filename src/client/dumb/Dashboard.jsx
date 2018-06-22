@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Typography, Button } from '@material-ui/core';
+import UserStatus from '../helpers/userStatus';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class Dashboard extends React.Component {
       >
         <Grid item>
           <Typography variant="headline">Welcome, {this.props.user.fullClientName}!</Typography>
-          <Typography variant="caption" align="center">{this.props.userType}</Typography>
+          <Typography variant="caption" align="center">{UserStatus.getDescription(this.props.userType)}</Typography>
         </Grid>
         <Grid item>
           <Typography variant="subheading">Balance: {this.props.balance}</Typography>

@@ -1,5 +1,6 @@
 /* global window */
 import client from './client';
+import UserStatus from './helpers/userStatus';
 
 async function authenticateSession() {
   if (!window.localStorage['feathers-jwt'] && window.location.pathname !== '/') {
@@ -16,13 +17,23 @@ async function authenticateSession() {
     const result = await client.authenticate(authenticationDetails);
     const payload = await client.passport.verifyJWT(result.accessToken);
     const userData = await client.service('/api/users').get(payload.userId);
-    client.set('user', userData);
+
+    const wallet = JSON.parse(userData.wallet);
+
+    const status = await UserStatus.getStatus(wallet.address);
+    let user = userData;
+
+    if (userData.status !== status) {
+      user = await client.service('/api/users').patch(userData._id, {status});
+    }
+
+    client.set('user', user);
     client.set('wallet', JSON.parse(userData.wallet));
     
     if (window.location.pathname === '/') {
       window.location.replace(window.location.origin + '/dashboard');
     }
-    return userData;
+    return user;
   } catch (e) {
     // window.location.replace(window.location.origin);
     return e;

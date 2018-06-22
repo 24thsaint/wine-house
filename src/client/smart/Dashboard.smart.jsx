@@ -5,7 +5,7 @@ import authenticate from '../authenticator';
 import client from '../client';
 import EthereumContract from '../ethereumContractClient';
 import WineGallery from './WineGallery';
-import settings from '../helpers/settings';
+import UserStatus from '../helpers/userStatus';
 
 class DashboardSmartComponent extends React.Component {
   constructor(props) {
@@ -24,13 +24,10 @@ class DashboardSmartComponent extends React.Component {
   async componentDidMount() {
     await authenticate();
     this.setState({
-      user: client.get('user')
+      user: client.get('user'),
+      userType: client.get('user').status
     });
     await this.getBalance();
-    const userType = await this.getUserType();
-    this.setState({
-      userType
-    });
   } 
 
   async getBalance() {
@@ -42,25 +39,6 @@ class DashboardSmartComponent extends React.Component {
       balance
     });
     return balance;
-  } 
-
-  async getUserType() {
-    const wallet = client.get('wallet');
-    const contractAddress = await settings.get('contractAddress');
-    const contract = await this.ethereumContract.loadContractPublic(contractAddress);
-    const isPartner = await contract.getTrustedPartner(wallet.address);
-    if (isMaster.toUpperCase() === '0X' + wallet.address.toUpperCase()) {
-      return 'Contract Master';
-    }
-    if (isPartner[1]) {
-      return 'Registered Partner';
-    }
-    const isOwner = await contract.getWineOwner(wallet.address);
-    if (isOwner[2]) {
-      return 'Registered Owner';
-    }
-    const isMaster = await contract.owner();
-    return 'Unverified User';    
   }
 
   render() {
