@@ -1,3 +1,6 @@
+require('babel-core/register');
+require('babel-polyfill');
+
 const path = require('path');
 const favicon = require('serve-favicon');
 const compress = require('compression');
