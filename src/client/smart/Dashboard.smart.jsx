@@ -26,7 +26,14 @@ class DashboardSmartComponent extends React.Component {
       user: client.get('user'),
       userType: client.get('user').status
     });
-    await this.getBalance();
+    try {
+      await this.getBalance();
+    } catch (e) {
+      this.setState({
+        address: 'Network Error',
+        balance: 'Not Connected'
+      })
+    }
   } 
 
   async getBalance() {

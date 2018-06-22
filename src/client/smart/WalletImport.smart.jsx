@@ -49,7 +49,7 @@ class WalletImportSmartComponent extends React.Component {
           status: true,
           message: result
         }
-      });
+      }); 
     } catch (e) {
       this.setState({
         success: {
@@ -58,6 +58,7 @@ class WalletImportSmartComponent extends React.Component {
         }
       });
     }
+    console.log(this.state.success);
   }
 
   render() {
