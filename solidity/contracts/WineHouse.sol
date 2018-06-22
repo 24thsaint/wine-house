@@ -170,7 +170,7 @@ contract WineHouse {
         return (wineIndices.length - 1, _uniqueIdentifier, wines[_uniqueIdentifier].isActive);
     }
     
-    function transferWine(address _to, string _uniqueIdentifier) public onlyAssetOwner(_uniqueIdentifier) recipientShouldExist(_to) {
+    function transferWine(address _to, string _uniqueIdentifier) public onlyAssetOwner(_uniqueIdentifier) {
         wines[_uniqueIdentifier].ownerHistory.push(wines[_uniqueIdentifier].currentOwner);
         wines[_uniqueIdentifier].currentOwner = _to;
 
