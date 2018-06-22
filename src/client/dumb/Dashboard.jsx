@@ -24,7 +24,10 @@ class Dashboard extends React.Component {
           <Typography variant="caption" align="center">{this.props.userType}</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="subheading">Balance ({'0x' + this.props.address}): {this.props.balance}</Typography>
+          <Typography variant="subheading">Balance: {this.props.balance}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="subheading">Address: {'0x' + this.props.address}</Typography>
         </Grid>
         <Grid item>
           <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>

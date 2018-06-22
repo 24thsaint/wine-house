@@ -53,8 +53,12 @@ class DashboardSmartComponent extends React.Component {
       return 'Registered Partner';
     }
     const isOwner = await contract.getWineOwner(wallet.address);
-    if (isOwner[3]) {
+    if (isOwner[2]) {
       return 'Registered Owner';
+    }
+    const isMaster = await contract.owner();
+    if (isMaster.toUpperCase() === '0X' + wallet.address.toUpperCase()) {
+      return 'Contract Master';
     }
     return 'Unverified User';    
   }
