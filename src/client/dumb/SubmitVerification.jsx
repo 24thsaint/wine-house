@@ -2,7 +2,7 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { Button, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, Typography, Divider } from '@material-ui/core';
+import { Button, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, Divider } from '@material-ui/core';
 import FileUpload from '@material-ui/icons/FileUpload';
 
 class SubmitVerification extends React.Component {

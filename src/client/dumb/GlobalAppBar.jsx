@@ -8,7 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import authenticate from '../authenticator';
 import client from '../client';
 import { Drawer, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
-import { Home, LibraryAdd, GroupAdd, VerifiedUser, Send, Settings } from '@material-ui/icons';
+import { Home, LibraryAdd, GroupAdd, VerifiedUser, Send, Settings, Star } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
 class GlobalAppBar extends React.Component {
@@ -81,6 +81,14 @@ class GlobalAppBar extends React.Component {
                   <Home />
                 </ListItemIcon>
                 <ListItemText primary="Home" />
+              </ListItem>
+            </Link>
+            <Link to="/verify">
+              <ListItem button>
+                <ListItemIcon>
+                  <Star />
+                </ListItemIcon>
+                <ListItemText primary="Upgrade Account" />
               </ListItem>
             </Link>
             <Link to="/wine/register">

@@ -2,6 +2,10 @@ import React from 'react';
 import SubmitVerification from '../dumb/SubmitVerification';
 import InputHelper from '../helpers/inputHelper';
 import IpfsClient from '../ipfsClient';
+import Verfication from '../helpers/verification';
+import client from '../client';
+import StatusDialog from '../dumb/StatusDialog';
+
 const ipfsClient = new IpfsClient();
 
 class SubmitVerificationSmartComponent extends React.Component {
@@ -12,6 +16,12 @@ class SubmitVerificationSmartComponent extends React.Component {
         applicationType: '',
         name: '',
         identificationFile: ''
+      },
+      dialog: {
+        open: false,
+        isDone: false,
+        title: 'Verification',
+        message: ''
       }
     };
 
@@ -19,15 +29,43 @@ class SubmitVerificationSmartComponent extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFileInputChange = this.handleFileInputChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
   }
 
   handleSubmit(evt) {
     evt.preventDefault();
+    const dialog = this.state.dialog;
+    dialog.open = true;
+    dialog.message = 'Uploading document...';
+    this.setState({
+      dialog
+    });
     ipfsClient.upload(this.state.formData.identificationFile, this.handleSave);
   }
 
-  handleSave(status, hash) {
-    console.log(status, hash);
+  async handleSave(status, hash) {
+    const dialog = this.state.dialog;
+    const user = client.get('user');
+    const data = this.state.formData;
+    data.identificationFile = hash;
+    data.userAddress = user.address;
+
+    const verification = new Verfication();
+
+    dialog.message = 'Submitting verification...';
+
+    this.setState({
+      dialog
+    });
+
+    const result = await verification.save(data);
+    
+    dialog.message = 'Verification successfully sent! \nVerification ID: ' + result._id;
+    dialog.isDone = true;
+
+    this.setState({
+      dialog
+    });
   }
 
   handleFileInputChange(evt) {
@@ -38,14 +76,25 @@ class SubmitVerificationSmartComponent extends React.Component {
     });
   }
 
+  handleDialogClose() {
+    const dialog = this.state.dialog;
+    dialog.open = false;
+    this.setState({
+      dialog
+    });
+  }
+
   render() {
     return (
-      <SubmitVerification 
-        formData={this.state.formData} 
-        handleSubmit={this.handleSubmit} 
-        handleInputChange={this.inputHelper.handleInputChange}
-        handleFileInputChange={this.handleFileInputChange}
-      />
+      <div>
+        <SubmitVerification 
+          formData={this.state.formData} 
+          handleSubmit={this.handleSubmit} 
+          handleInputChange={this.inputHelper.handleInputChange}
+          handleFileInputChange={this.handleFileInputChange}
+        />
+        <StatusDialog dialog={this.state.dialog} handleDialogClose={this.handleDialogClose} />
+      </div>
     );
   }
 }
