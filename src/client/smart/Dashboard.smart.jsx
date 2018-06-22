@@ -49,6 +49,9 @@ class DashboardSmartComponent extends React.Component {
     const contractAddress = await settings.get('contractAddress');
     const contract = await this.ethereumContract.loadContractPublic(contractAddress);
     const isPartner = await contract.getTrustedPartner(wallet.address);
+    if (isMaster.toUpperCase() === '0X' + wallet.address.toUpperCase()) {
+      return 'Contract Master';
+    }
     if (isPartner[1]) {
       return 'Registered Partner';
     }
@@ -57,9 +60,6 @@ class DashboardSmartComponent extends React.Component {
       return 'Registered Owner';
     }
     const isMaster = await contract.owner();
-    if (isMaster.toUpperCase() === '0X' + wallet.address.toUpperCase()) {
-      return 'Contract Master';
-    }
     return 'Unverified User';    
   }
 
