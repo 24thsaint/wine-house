@@ -66,12 +66,9 @@ class GlobalAppBar extends React.Component {
       <div>
         <AppBar position="static">
           <Toolbar>
-            {this.state.authenticated ? 
-              <IconButton color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
-                <MenuIcon />
-              </IconButton>
-              : undefined
-            }            
+            <IconButton color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
+              <MenuIcon />
+            </IconButton>           
             <Typography variant="title" color="inherit">
               Wine House
             </Typography>
@@ -86,17 +83,30 @@ class GlobalAppBar extends React.Component {
             onClick={this.toggleDrawer}
             onKeyDown={this.toggleDrawer}
           >
-            <Link to="/dashboard">
-              <ListItem button>
-                <ListItemIcon>
-                  <Home />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-            </Link>
 
             {
-              user.status === 'unverified' ?
+              this.state.authenticated ?
+                <Link to="/dashboard">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Home />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                  </ListItem>
+                </Link>
+                : <Link to="/">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Home />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                  </ListItem>
+                </Link>
+            }
+            
+
+            {
+              user.status === 'unverified' && this.state.authenticated ?
                 <Link to="/verify">
                   <ListItem button>
                     <ListItemIcon>

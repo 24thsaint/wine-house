@@ -16,6 +16,7 @@ class PartnerRegistration extends React.Component {
       formData: {
         partnerAddress: this.props.partnerAddress || '',
         partnerName: this.props.partnerName || '',
+        identificationFile: this.props.identificationFile || 'VOUCHED BY MASTER',
         password: ''
       },
       open: false,
@@ -82,7 +83,7 @@ class PartnerRegistration extends React.Component {
       this.setState({
         dialog
       });
-      const result = await contract.addTrustedPartner(this.state.formData.partnerAddress, this.state.formData.partnerName);
+      const result = await contract.addTrustedPartner(this.state.formData.partnerAddress, this.state.formData.partnerName, this.state.formData.identificationFile);
       await contract.provider.waitForTransaction(result.hash);
       if (this.props.executeSaveCallback) {
         await this.props.executeSaveCallback(true, this.props.requestId);

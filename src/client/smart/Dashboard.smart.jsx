@@ -5,7 +5,6 @@ import authenticate from '../authenticator';
 import client from '../client';
 import EthereumContract from '../ethereumContractClient';
 import WineGallery from './WineGallery';
-import UserStatus from '../helpers/userStatus';
 
 class DashboardSmartComponent extends React.Component {
   constructor(props) {

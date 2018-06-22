@@ -94,6 +94,7 @@ class ViewVerificationsSmartComponent extends React.Component {
                 <PartnerRegistration 
                   partnerAddress={this.state.executeAcceptedEventData.userAddress}
                   partnerName={this.state.executeAcceptedEventData.name}
+                  identificationFile={this.state.executeAcceptedEventData.identificationFile}
                   requestId={this.state.executeAcceptedEventData._id}
                   executeSaveCallback={this.executeSave}
                   executeCloseCallback={this.handleDialogClose}
@@ -105,6 +106,7 @@ class ViewVerificationsSmartComponent extends React.Component {
                 <OwnerRegistration 
                   ownerAddress={this.state.executeAcceptedEventData.userAddress}
                   ownerName={this.state.executeAcceptedEventData.name}
+                  identificationFile={this.state.executeAcceptedEventData.identificationFile}
                   requestId={this.state.executeAcceptedEventData._id}
                   executeSaveCallback={this.executeSave}
                   executeCloseCallback={this.handleDialogClose}

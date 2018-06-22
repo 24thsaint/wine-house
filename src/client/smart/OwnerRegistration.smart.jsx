@@ -16,6 +16,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
       formData: {
         ownerAddress: this.props.ownerAddress || '',
         ownerName: this.props.ownerName || '',
+        identificationFile: this.props.identificationFile || 'VOUCHED BY MASTER',
         password: ''
       },
       open: false,
@@ -82,7 +83,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
       this.setState({
         dialog
       });
-      const result = await contract.registerWineOwner(this.state.formData.ownerAddress, this.state.formData.ownerName);
+      const result = await contract.registerWineOwner(this.state.formData.ownerAddress, this.state.formData.ownerName, this.state.formData.identificationFile);
       await contract.provider.waitForTransaction(result.hash);
       if (this.props.executeSaveCallback) {
         await this.props.executeSaveCallback(true, this.props.requestId);
