@@ -15,7 +15,8 @@ contract WineHouse {
         string name;
         mapping (string => bool) wines;
         string[] ownedWines;
-        bool isActive;
+        bool isVerified;
+        string proofOfIdentity;
     }
     
     struct WineData {
@@ -45,14 +46,14 @@ contract WineHouse {
         require(wineOwners[msg.sender].wines[_uniqueIdentifier] == true);
         _;
     }
-
-    modifier wineShouldNotExist(string _uniqueIdentifier) {
-        require(wines[_uniqueIdentifier].isActive == false);
+    
+    modifier onlyVerified() {
+        require(wineOwners[msg.sender].isVerified == true);
         _;
     }
 
-    modifier recipientShouldExist(address _recipient) {
-        require(wineOwners[_recipient].isActive == true);
+    modifier wineShouldNotExist(string _uniqueIdentifier) {
+        require(wines[_uniqueIdentifier].isActive == false);
         _;
     }
     
@@ -86,21 +87,23 @@ contract WineHouse {
     
     function registerWineOwner(
         address _ownerAddress, 
-        string _name
+        string _name,
+        string _proofOfIdentity
         ) public onlyMaster
         returns (
             address, string, bool
         ) {
         
         wineOwners[_ownerAddress].name = _name;
-        wineOwners[_ownerAddress].isActive = true;
+        wineOwners[_ownerAddress].isVerified = true;
+        wineOwners[_ownerAddress].proofOfIdentity = _proofOfIdentity;
 
         emit NewWineOwner(_ownerAddress, _name);
 
         return (
             _ownerAddress, 
             wineOwners[_ownerAddress].name, 
-            wineOwners[_ownerAddress].isActive
+            wineOwners[_ownerAddress].isVerified
         );
 
     }
@@ -109,15 +112,16 @@ contract WineHouse {
         return (
             _ownerAddress,
             wineOwners[_ownerAddress].name,
-            wineOwners[_ownerAddress].isActive
+            wineOwners[_ownerAddress].isVerified
         );
     }
     
-    function addTrustedPartner(address _partnerAddress, string _name) public onlyMaster returns (address, bool) {
+    function addTrustedPartner(address _partnerAddress, string _name, string _proofOfIdentity) public onlyMaster returns (address, bool) {
         trustedPartners[_partnerAddress] = true;
         wineOwners[_partnerAddress].name = _name;
-        wineOwners[_partnerAddress].isActive = true;
-        registerWineOwner(_partnerAddress, _name);
+        wineOwners[_partnerAddress].isVerified = true;
+        wineOwners[_partnerAddress].proofOfIdentity = _proofOfIdentity;
+        registerWineOwner(_partnerAddress, _name, _proofOfIdentity);
         
         emit NewTrustedPartner(_partnerAddress, _name);
 
@@ -170,7 +174,9 @@ contract WineHouse {
         return (wineIndices.length - 1, _uniqueIdentifier, wines[_uniqueIdentifier].isActive);
     }
     
-    function transferWine(address _to, string _uniqueIdentifier) public onlyAssetOwner(_uniqueIdentifier) {
+    function transferWine(address _to, string _uniqueIdentifier) 
+        public onlyAssetOwner(_uniqueIdentifier) onlyVerified() {
+            
         wines[_uniqueIdentifier].ownerHistory.push(wines[_uniqueIdentifier].currentOwner);
         wines[_uniqueIdentifier].currentOwner = _to;
 

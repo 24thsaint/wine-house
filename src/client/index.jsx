@@ -21,6 +21,7 @@ import WineVerificationSmartComponent from './smart/WineVerification.smart';
 import TransferWineSmartComponent from './smart/TransferWine.smart';
 import AdminTools from './smart/AdminTools.smart';
 import OwnerRegistration from './smart/OwnerRegistration';
+import SubmitVerificationSmartComponent from './smart/SubmitVerification.smart';
 
 const theme = createMuiTheme({
   palette: {
@@ -60,6 +61,7 @@ const Index = () => (
                 <Route path="/import-wallet" component={WalletImportSmartComponent} />
                 <Route path="/partner/register" component={PartnerRegistration} />
                 <Route path="/owner/register" component={OwnerRegistration} />
+                <Route path="/verify" component={SubmitVerificationSmartComponent} />
                 <Route component={Error404} />
               </Switch>
             </Grid>
