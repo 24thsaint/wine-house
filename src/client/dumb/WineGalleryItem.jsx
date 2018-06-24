@@ -1,5 +1,5 @@
 import React from 'react';
-import {Paper, Table, TableBody, TableRow, TableCell, Button } from '@material-ui/core';
+import {Paper, Table, TableBody, TableRow, TableCell, Button, Grid } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 
 class WineGalleryItem extends React.Component {
@@ -7,8 +7,8 @@ class WineGalleryItem extends React.Component {
     const wine = this.props.wine;
 
     return (
-      <div>
-        <Paper style={{margin: 10, padding: 20}}>
+      <Grid item xs>
+        <Paper style={{margin: 10, padding: 20, overflowX: 'auto', width: '100%'}}>
           <Table>
             <TableBody>
               
@@ -61,7 +61,7 @@ class WineGalleryItem extends React.Component {
             </TableBody>
           </Table>
         </Paper>
-      </div>
+      </Grid>
     );
   }
 }

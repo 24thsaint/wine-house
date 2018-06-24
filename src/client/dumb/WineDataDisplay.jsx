@@ -4,8 +4,13 @@ import { Typography, Table, TableBody, TableRow, TableCell, Grid, Divider, Table
 class WineDataDisplay extends React.Component {
   render() {
     return (
-      <Grid container direction="row" style={{marginTop: 30}}>
-        <Grid item>
+      <Grid 
+        container 
+        direction="row" 
+        justify="center"
+        style={{marginTop: 30}}
+      >
+        <Grid item style={{marginBottom: 35}}>
           <Grid item>
             <Typography align="center">This wine is legitimate if it is currently owned by: </Typography>
           </Grid>
