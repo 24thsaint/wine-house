@@ -3,7 +3,7 @@ import EthereumContractClient from '../ethereumContractClient';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
 import WineGalleryItem from '../dumb/WineGalleryItem';
-import { Typography, Badge, Grid } from '@material-ui/core';
+import { Typography, Badge, Grid, CircularProgress } from '@material-ui/core';
 import { Collections } from '@material-ui/icons';
 
 class WineGallery extends React.Component {
@@ -12,12 +12,16 @@ class WineGallery extends React.Component {
     this.state = {
       wines: [],
       isError: false,
-      errorMsg: ''
+      errorMsg: '',
+      isLoading: true
     };
     this.ethereumClient = new EthereumContractClient();
   }
 
   async componentDidMount() {
+    this.setState({
+      isLoading: true
+    });
     const user = await authenticate();
 
     try {
@@ -49,10 +53,12 @@ class WineGallery extends React.Component {
       }
   
       this.setState({
-        wines
+        wines,
+        isLoading: false
       });
     } catch (e) {
       this.setState({
+        isLoading: false,
         isError: true,
         errorMsg: 'Unable to retrieve owned wines: ' + e.message
       });
@@ -66,16 +72,22 @@ class WineGallery extends React.Component {
           !this.state.isError ? 
             <Grid item>
               <Typography variant="title" align="center">
-            Wine Gallery 
+                Wine Gallery 
                 <Badge badgeContent={this.state.wines.length} color="primary">
                   <Collections style={{marginLeft: 10}} />
                 </Badge>
               </Typography>
+              
               {
-                this.state.wines.length > 0 ?
-                  <Typography variant="caption" align="center">These are the wines you own...</Typography>
-                  : <Typography variant="caption" align="center">No owned wines, yet!</Typography>
+                this.state.isLoading ? 
+                  <Grid container item justify="center">
+                    <CircularProgress />
+                  </Grid>
+                  : this.state.wines.length > 0 ?
+                    <Typography variant="caption" align="center">These are the wines you own...</Typography>
+                    : <Typography variant="caption" align="center">No owned wines, yet!</Typography>
               }
+
               {
                 this.state.wines.map(wine => (
                   <WineGalleryItem key={wine.key} wine={wine} />

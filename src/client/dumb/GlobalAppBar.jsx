@@ -187,7 +187,7 @@ class GlobalAppBar extends React.Component {
             </Link>
 
             {
-              user.status === 'partner' || user.status === 'owner' ?
+              user.status === 'partner' || user.status === 'owner' || user.status === 'master' ?
                 <Link to="/wine/transfer">
                   <ListItem button>
                     <ListItemIcon>

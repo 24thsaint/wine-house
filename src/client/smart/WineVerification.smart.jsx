@@ -11,12 +11,12 @@ class WineVerificationSmartComponent extends React.Component {
     super(props);
     this.state = {
       formData: {
-        wineIdentifier: ''
+        wineIdentifier: this.props.match.params.wineId || ''
       },
       wine: {},
       isWineDataRetrieved: false,
       isError: false,
-      errorMsg: ''
+      errorMsg: '',
     };
     this.inputHelper = new InputHelper(this);
     this.handleSubmit = this.handleSubmit.bind(this);

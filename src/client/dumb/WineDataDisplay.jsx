@@ -1,20 +1,22 @@
 import React from 'react';
-import { Typography, Table, TableBody, TableRow, TableCell, Grid, Divider } from '@material-ui/core';
+import { Typography, Table, TableBody, TableRow, TableCell, Grid, Divider, TableHead } from '@material-ui/core';
 
 class WineDataDisplay extends React.Component {
   render() {
     return (
-      <Grid item>
+      <Grid container direction="row" style={{marginTop: 30}}>
         <Grid item>
-          <Typography align="center">This wine is legitimate if it is currently owned by: </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="subheading">{this.props.wineOwner}</Typography>
-        </Grid>
-        <Grid item>
-          <Divider />
-        </Grid>
-        <Grid item>
+          <Grid item>
+            <Typography align="center">This wine is legitimate if it is currently owned by: </Typography>
+          </Grid>
+          <Grid item style={{ marginTop: 10, marginBottom: 10 }}>
+            <Typography align="center" variant="subheading">
+              <b>{this.props.wineOwner || 'Unverified User'}</b>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Divider />
+          </Grid>
           <Table>
             <TableBody>
               <TableRow>
@@ -45,19 +47,36 @@ class WineDataDisplay extends React.Component {
           </Table>
         </Grid>
 
-        {this.props.wine.ownerHistoryCount > 0 ? 
-          <Grid item>
-            <Typography>This wine was previously owned by:</Typography>
-            {
-              this.props.wine.ownerHistory.map(owner => (
-                <div key={owner.address}>
-                  {owner.address} - {owner.name}
-                </div>
-              ))
-            }
-          </Grid>
-          : <Grid item><Typography>This wine has not been transferred, yet!</Typography></Grid>
-        }
+        <Grid item style={{marginLeft: 20}}>
+          {this.props.wine.ownerHistoryCount > 0 ? 
+            <Grid item>
+              <Typography align="center">This wine was previously owned by:</Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Address</TableCell>
+                    <TableCell>Official Name</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    this.props.wine.ownerHistory.map(owner => (
+                      <TableRow key={owner.address}>
+                        <TableCell>
+                          {owner.address}
+                        </TableCell>
+                        <TableCell>
+                          {owner.name}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </Grid>
+            : <Grid item><Typography>This wine has not been transferred, yet!</Typography></Grid>
+          }
+        </Grid>
 
         
       </Grid>

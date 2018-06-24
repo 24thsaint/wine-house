@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography, Paper } from '@material-ui/core';
+import {Paper, Table, TableBody, TableRow, TableCell, Button } from '@material-ui/core';
+import {Link} from 'react-router-dom';
 
 class WineGalleryItem extends React.Component {
   render() {
@@ -8,13 +9,57 @@ class WineGalleryItem extends React.Component {
     return (
       <div>
         <Paper style={{margin: 10, padding: 20}}>
-          <Typography variant="subheading">Wine ID: {wine.key}</Typography>
-          <Typography>Back Label: {wine.backLabel}</Typography>
-          <Typography>Front Label: {wine.frontLabel}</Typography>
-          <Typography>Bottle: {wine.bottle}</Typography>
-          <Typography>Capsule: {wine.capsule}</Typography>
-          <Typography>Cork: {wine.cork}</Typography>
-          <Typography>Glass: {wine.glass}</Typography>
+          <Table>
+            <TableBody>
+              
+              <TableRow>
+                <TableCell>Wine ID</TableCell>
+                <TableCell>{wine.key}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Back Label</TableCell>
+                <TableCell>{wine.backLabel}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Front Label</TableCell>
+                <TableCell>{wine.frontLabel}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Bottle</TableCell>
+                <TableCell>{wine.bottle}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Capsule</TableCell>
+                <TableCell>{wine.capsule}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Cork</TableCell>
+                <TableCell>{wine.cork}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>Glass</TableCell>
+                <TableCell>{wine.glass}</TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell colSpan={2}>
+                  <Link to={`/wine/verify/${wine.key}`}>
+                    <Button variant="flat" color="primary">Verify</Button>
+                  </Link>
+                  <Link to={`/wine/transfer/${wine.key}`}>
+                    <Button variant="flat" color="primary">Transfer</Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+
+            </TableBody>
+          </Table>
         </Paper>
       </div>
     );

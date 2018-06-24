@@ -14,7 +14,7 @@ class TransferWineSmartComponent extends React.Component {
     this.state = {
       formData: {
         newOwner: '',
-        transferWineIdentifier: ''
+        transferWineIdentifier: this.props.match.params.wineId || ''
       },
       open: false,
       dialog: {

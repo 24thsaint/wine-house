@@ -55,6 +55,8 @@ const Index = () => (
                 <Route exact path="/" component={LoginComponent} />
                 <Route path="/register" component={RegistrationComponent} />
                 <Route path="/wine/register" component={WineRegistrationComponent} />
+                <Route path="/wine/verify/:wineId" component={WineVerificationSmartComponent} />
+                <Route path="/wine/transfer/:wineId" component={TransferWineSmartComponent} />
                 <Route path="/wine/verify" component={WineVerificationSmartComponent} />
                 <Route path="/wine/transfer" component={TransferWineSmartComponent} />
                 <Route path="/admin/tools" component={AdminTools} />
