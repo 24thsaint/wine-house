@@ -1,7 +1,7 @@
 module.exports = async function execute(context) {
   const response = await context.app.service('/api/users').find();
 
-  if (response.total <= 0) {
+  if (response.total <= 1) {
     return context;
   }
   
