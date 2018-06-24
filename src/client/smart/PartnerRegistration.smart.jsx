@@ -22,6 +22,7 @@ class PartnerRegistration extends React.Component {
       open: false,
       dialog: {
         open: false,
+        success: null,
         isDone: false,
         title: 'Partner Registration',
         message: ''
@@ -90,12 +91,18 @@ class PartnerRegistration extends React.Component {
       }
 
       dialog.isDone = true;
+      dialog.success = true;
       dialog.message = 'Partner successfully registered!';
       this.setState({
         dialog
       });
     } catch (e) {
-      console.log(e);
+      dialog.isDone = true;
+      dialog.success = false;
+      dialog.message = 'Registration failed: ' + e.message;
+      this.setState({
+        dialog
+      });
     }
   }
 

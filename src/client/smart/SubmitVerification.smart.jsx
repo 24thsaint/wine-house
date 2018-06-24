@@ -21,7 +21,8 @@ class SubmitVerificationSmartComponent extends React.Component {
         open: false,
         isDone: false,
         title: 'Verification',
-        message: ''
+        message: '',
+        success: null
       }
     };
 
@@ -43,8 +44,19 @@ class SubmitVerificationSmartComponent extends React.Component {
     ipfsClient.upload(this.state.formData.identificationFile, this.handleSave);
   }
 
-  async handleSave(status, hash) {
+  async handleSave(isOperationSuccessful, hash) {
     const dialog = this.state.dialog;
+
+    if (!isOperationSuccessful) {
+      dialog.success = false;
+      dialog.message = 'Internal server error: File failed to upload!';
+      dialog.isDone = true;
+      this.setState({
+        dialog
+      });
+      return;
+    }
+
     const user = client.get('user');
     const data = this.state.formData;
     data.identificationFile = hash;
@@ -58,14 +70,25 @@ class SubmitVerificationSmartComponent extends React.Component {
       dialog
     });
 
-    const result = await verification.save(data);
+    let result;
     
-    dialog.message = 'Verification successfully sent! \nVerification ID: ' + result._id;
-    dialog.isDone = true;
+    try {
+      result = await verification.save(data);
+      dialog.message = 'Verification successfully sent! \nVerification ID: ' + result._id;
+      dialog.isDone = true;
+      dialog.success = true;
 
-    this.setState({
-      dialog
-    });
+      this.setState({
+        dialog
+      });
+    } catch (e) {
+      dialog.success = false;
+      dialog.message = e.message;
+      dialog.isDone = true;
+      this.setState({
+        dialog
+      });
+    }
   }
 
   handleFileInputChange(evt) {

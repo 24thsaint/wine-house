@@ -23,6 +23,7 @@ class WineRegistrationSmartComponent extends React.Component {
       open: false,
       dialog: {
         open: false,
+        success: null,
         isDone: false,
         title: 'Wine Registration',
         message: ''
@@ -74,28 +75,39 @@ class WineRegistrationSmartComponent extends React.Component {
   async handleWallet(wallet) {
     const dialog = this.state.dialog;
 
-    dialog.open = true;
-    dialog.message = 'Initializing Contract...';
-    this.setState({
-      dialog
-    });
-    const contract = await this.ethereumContractClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
-    const { cork, capsule, glass, frontLabel, backLabel, bottle } = this.state.formData;
-    const uniqueIdentifier = SHA256(JSON.stringify(this.state.formData)).toString();
-
-    dialog.message = 'Creating wine...';
-    this.setState({
-      dialog
-    });
-
-    const transaction = await contract.createWine(cork, capsule, glass, frontLabel, backLabel, bottle, uniqueIdentifier);
-    await contract.provider.waitForTransaction(transaction.hash);
-    
-    dialog.message = 'Wine created!\nUnique identifier: ' + uniqueIdentifier;
-    dialog.isDone = true;
-    this.setState({
-      dialog
-    });
+    try {
+      dialog.open = true;
+      dialog.message = 'Initializing Contract...';
+      this.setState({
+        dialog
+      });
+      const contract = await this.ethereumContractClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
+      const { cork, capsule, glass, frontLabel, backLabel, bottle } = this.state.formData;
+      const uniqueIdentifier = SHA256(JSON.stringify(this.state.formData)).toString();
+  
+      dialog.message = 'Creating wine...';
+      this.setState({
+        dialog
+      });
+  
+      const transaction = await contract.createWine(cork, capsule, glass, frontLabel, backLabel, bottle, uniqueIdentifier);
+      await contract.provider.waitForTransaction(transaction.hash);
+      
+      dialog.message = 'Wine created!\nUnique identifier: ' + uniqueIdentifier;
+      dialog.isDone = true;
+      dialog.success = true;
+      
+      this.setState({
+        dialog
+      });
+    } catch (e) {
+      dialog.isDone = true;
+      dialog.success = false;
+      dialog.message = 'Wine registration failed: ' + e.message;
+      this.setState({
+        dialog
+      });
+    }
   }
 
   render() {

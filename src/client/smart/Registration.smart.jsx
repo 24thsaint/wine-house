@@ -24,8 +24,12 @@ class RegistrationSmartComponent extends React.Component {
       },
       // 0 = neutral, 1 = error, 2 = successful, 3 = success redirect
       registrationStatus: 0,
-      open: false,
-      walletProgress: 0
+      walletProgress: 0,
+      dialog: {
+        open: false,
+        title: '',
+        message: ''
+      }
     };
     this.inputHelper = new InputHelper(this);
     this.registrationFormHandler = this.registrationFormHandler.bind(this);
@@ -46,29 +50,54 @@ class RegistrationSmartComponent extends React.Component {
   async registrationFormHandler(evt) {
     evt.preventDefault();
     const formData = this.state.formData;
+    const dialog = this.state.dialog;
     const ethereumWallet = new EthereumWallet();
-    
-    formData.wallet = await ethereumWallet.wallet.encrypt(formData.password, this.setWalletProgress);
-    formData.address = '0x' + JSON.parse(formData.wallet).address;
+    let result;
 
-    const result = await this.userService.create(this.state.formData);
-
-    if (result._id) {
-      this.setState({
-        registrationStatus: 2,
-        open: true
-      });
-    } else {
+    try {
+      formData.wallet = await ethereumWallet.wallet.encrypt(formData.password, this.setWalletProgress);
+      formData.address = '0x' + JSON.parse(formData.wallet).address;
+      result = await this.userService.create(this.state.formData);
+    } catch (e) {
+      dialog.open = true;
+      dialog.title = 'Failed';
+      dialog.message = 'Registration failed: ' + e.message;
       this.setState({
         registrationStatus: 1
+      });
+    }
+
+    if (result._id) {
+      dialog.open = true;
+      dialog.title = 'Success!';
+      dialog.message = 'Registration successful, you may now login.';
+      this.setState({
+        registrationStatus: 2,
+        dialog
+      });
+    } else {
+      dialog.open = true;
+      dialog.title = 'Failed!';
+      dialog.message = 'Internal server error: Registration failure.';
+      this.setState({
+        registrationStatus: 1,
+        dialog
       });
     }
   }
 
   handleClose() {
-    this.setState({
-      registrationStatus: 3
-    });
+    const dialog = this.state.dialog;
+    if (this.state.registrationStatus === 2) {
+      this.setState({
+        registrationStatus: 3
+      }); 
+    } else {
+      dialog.open = false;
+      this.setState({
+        dialog
+      });
+    }
   } 
 
   render() {
@@ -81,15 +110,15 @@ class RegistrationSmartComponent extends React.Component {
           walletProgress={this.state.walletProgress}
         />
         <Dialog
-          open={this.state.open}
+          open={this.state.dialog.open}
           onClose={this.handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Registration Successful!</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{this.state.dialog.title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You may now login.
+              {this.state.dialog.message}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

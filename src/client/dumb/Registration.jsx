@@ -2,9 +2,7 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { Button } from '@material-ui/core';
-import LinearProgress from '@material-ui/core/LinearProgress';
-
+import { Button, Typography } from '@material-ui/core';
 import WalletProgress from '../dumb/WalletProgress';
 
 class Login extends React.Component {
@@ -62,9 +60,23 @@ class Login extends React.Component {
               />
             </Grid>
 
-            <Grid item>
-              <WalletProgress progress={this.props.walletProgress} message={'Creating wallet, please wait...'} />
-            </Grid>
+            {
+              this.props.walletProgress > 0 && this.props.walletProgress < 1 ? 
+                <Grid item style={{padding: 20}}>
+                  <Typography>Creating account, please wait...</Typography>
+                  <WalletProgress progress={this.props.walletProgress} />
+                </Grid>
+                : undefined
+            }
+
+            {
+              this.props.walletProgress === 1 ? 
+                <Grid item style={{padding: 20}}>
+                  <Typography>Communicating with server...</Typography>
+                  <WalletProgress progress={this.props.walletProgress} />
+                </Grid>
+                : undefined
+            }
 
             <Grid item>
               <Button

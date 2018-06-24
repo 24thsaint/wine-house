@@ -58,7 +58,6 @@ class WalletImportSmartComponent extends React.Component {
         }
       });
     }
-    console.log(this.state.success);
   }
 
   render() {
@@ -74,7 +73,7 @@ class WalletImportSmartComponent extends React.Component {
 
         {
           this.state.success.status ===  false ?
-            <Typography variant="headline">Wallet Import Failed!</Typography>
+            <Typography variant="headline">Wallet Import Failed: {this.state.success.message}</Typography>
             : undefined
         }
 

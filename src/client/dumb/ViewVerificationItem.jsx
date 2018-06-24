@@ -39,6 +39,7 @@ class ViewVerificationItem extends React.Component {
       <div>
         <Paper elevation={4} style={{margin: 30, marginLeft: 50, marginRight: 50}}>
           <Grid item style={{padding: 20, paddingBottom: 0}}>
+            <Typography>Request ID: { this.props.data._id }</Typography>
             <Typography>Application type: { this.props.data.applicationType.toUpperCase() }</Typography>
             <Typography>Name: { this.props.data.name }</Typography>
           </Grid>
@@ -51,12 +52,21 @@ class ViewVerificationItem extends React.Component {
             </Button>
           </Grid>
           <Grid item style={{ padding: 20, backgroundColor: '#EFE0B9'}}>
-            <Button color="secondary" variant="outlined" style={{marginRight: 10}} onClick={this.props.handleAccept}>
-              Accept
-            </Button>
-            <Button color="primary" variant="outlined" onClick={this.props.handleReject}>
-              Reject
-            </Button>
+            {
+              this.props.action.requestId === this.props.data._id && this.props.action.status ?
+                <div>
+                  <Typography variant="body1">{this.props.action.status}</Typography>
+                </div>
+                :
+                <div>
+                  <Button color="secondary" variant="outlined" style={{marginRight: 10}} onClick={this.props.handleAccept}>
+                    Accept
+                  </Button>
+                  <Button color="primary" variant="outlined" onClick={this.props.handleReject}>
+                    Reject
+                  </Button>
+                </div>
+            }
           </Grid>
         </Paper>
 

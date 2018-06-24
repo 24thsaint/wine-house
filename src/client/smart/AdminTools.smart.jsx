@@ -1,16 +1,12 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { Button } from '@material-ui/core';
 
 import EthereumContract from '../ethereumContractClient';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
 import client from '../client';
 import InputHelper from '../helpers/inputHelper';
 import settings from '../helpers/settings';
+import StatusDialog from '../dumb/StatusDialog';
 
 class AdminTools extends React.Component {
   constructor(props) {
@@ -21,16 +17,20 @@ class AdminTools extends React.Component {
         password: ''
       },
       unlockProgress: 0,
-      notificationOpen: false,
-      notificationMessage: ''
+      dialog: {
+        open: false,
+        isDone: false,
+        title: 'Contract Deployment',
+        message: '',
+        success: null
+      }
     };
     this.deployContract = this.deployContract.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleWallet = this.handleWallet.bind(this);
     this.setDeployProgressMessage = this.setDeployProgressMessage.bind(this);
-    this.handleCloseNotification = this.handleCloseNotification.bind(this);
-
+    this.handleDialogClose = this.handleDialogClose.bind(this);
     this.ethereumContract = new EthereumContract();
     this.inputHelper = new InputHelper(this);
   }
@@ -51,36 +51,66 @@ class AdminTools extends React.Component {
     });
   }
 
-  handleCloseNotification() {
+  handleDialogClose() {
+    const dialog = this.state.dialog;
+    dialog.open = false;
+
     this.setState({
-      notificationOpen: false
+      dialog
     });
   }
 
   setDeployProgressMessage(status, message) {
+    const dialog = this.state.dialog;  
+    dialog.message = status;
+    console.log(message);
+
     this.setState({
-      deployProgressStatus: status,
-      deployProgressMessage: message
+      dialog
     });
   }
 
   async handleWallet(wallet) {
     this.handleClose();
-    const contractAddress = await this.ethereumContract.deployContract(wallet.privateKey, this.setDeployProgressMessage);
+    const dialog = this.state.dialog;
 
-    let setting = await settings.set('contractAddress', contractAddress);
-    const user = client.get('user');
-    await client.service('/api/users').patch(user._id, {status: 'master'});
+    try {
+      dialog.message = 'Deploying contract...';
+      dialog.open = true;
+      this.setState({
+        dialog
+      });
 
-    this.setState({
-      notificationOpen: true,
-      notificationMessage: 'Contract deploy successful! Address: ' + setting.value
-    });
+      const contractAddress = await this.ethereumContract.deployContract(wallet.privateKey, this.setDeployProgressMessage);
+
+      dialog.message = 'Saving contract address...';      
+      this.setState({
+        dialog
+      });
+
+      let setting = await settings.set('contractAddress', contractAddress);
+      const user = client.get('user');
+      await client.service('/api/users').patch(user._id, {status: 'master'});
+
+      dialog.message = 'Contract deploy successful! \nAddress: ' + setting.value;
+      dialog.isDone = true;
+      dialog.success = true;
+      this.setState({
+        dialog
+      });
+    } catch (e) {
+      dialog.message = 'Contract creation failed: ' + e.message;
+      dialog.isDone = true;
+      dialog.success = false;
+      this.setState({
+        dialog
+      });
+    }
   }
 
   render() {
     return (
-      <div>
+      <div style={{margin: 100}}>
         <Button variant="raised" onClick={this.deployContract}>Deploy Contract</Button>
         <WalletUnlockModal 
           open={this.state.open} 
@@ -88,26 +118,7 @@ class AdminTools extends React.Component {
           handleWallet={this.handleWallet}
         />
 
-        <Typography>{this.state.deployProgressStatus}</Typography>
-
-        <Dialog
-          open={this.state.notificationOpen}
-          onClose={this.handleCloseNotification}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">Success!</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {this.state.notificationMessage}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCloseNotification} color="primary" autoFocus>
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <StatusDialog dialog={this.state.dialog} handleDialogClose={this.handleDialogClose} />
       </div>
     );
   }

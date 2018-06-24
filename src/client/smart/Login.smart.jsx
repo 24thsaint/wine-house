@@ -1,9 +1,11 @@
+/* global alert */
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import HomeView from '../dumb/HomeView';
 import InputHelper from '../helpers/inputHelper';
 import client from '../client';
+import { Typography, Grid } from '@material-ui/core';
 class LoginSmartComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +14,7 @@ class LoginSmartComponent extends React.Component {
         username: '',
         password: ''
       },
-      isAuthenticated: false
+      isAuthenticated: null,
     };
     this.inputHelper = new InputHelper(this);
     this.loginAction = this.loginAction.bind(this);
@@ -34,21 +36,33 @@ class LoginSmartComponent extends React.Component {
     } catch (e) {
       this.setState({ 
         isAuthenticated: false,
-        error: e
+        error: e.message
       });
     }
   }
 
   render() {
     return (
-      <div>
-        <HomeView 
-          handleLogin={this.loginAction} 
-          handleInputChange={this.inputHelper.handleInputChange}
-          formData={this.state.formData} 
-        />
+      <Grid
+        alignItems="center"
+        justify="center"
+        direction="column"
+      >
+        {this.state.isAuthenticated === false ? 
+          <Grid item style={ { padding: 20 } }>
+            <Typography color="error" align="center" variant="headline">Login failed: {this.state.error}</Typography>
+          </Grid>
+          : undefined
+        }
+        <Grid item>
+          <HomeView 
+            handleLogin={this.loginAction} 
+            handleInputChange={this.inputHelper.handleInputChange}
+            formData={this.state.formData} 
+          />
+        </Grid>
         {this.state.isAuthenticated ? <Redirect to="/dashboard" /> : undefined}
-      </div>
+      </Grid>
     );
   }
 }

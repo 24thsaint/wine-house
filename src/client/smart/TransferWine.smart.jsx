@@ -20,6 +20,7 @@ class TransferWineSmartComponent extends React.Component {
       dialog: {
         open: false,
         isDone: false,
+        success: null,
         title: 'Transfer Wine',
         message: ''
       }
@@ -64,27 +65,37 @@ class TransferWineSmartComponent extends React.Component {
   async handleWallet(wallet) {
     const dialog = this.state.dialog;
 
-    dialog.open = true;
-    dialog.message = 'Initializing Contract...';
-    this.setState({
-      dialog
-    });
+    try {
+      dialog.open = true;
+      dialog.message = 'Initializing Contract...';
+      this.setState({
+        dialog
+      });
 
-    const contract = await this.ethereumClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
+      const contract = await this.ethereumClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
 
-    dialog.message = 'Transferring wine...';
-    this.setState({
-      dialog
-    });
+      dialog.message = 'Transferring wine...';
+      this.setState({
+        dialog
+      });
 
-    const transaction = await contract.transferWine(this.state.formData.newOwner, this.state.formData.transferWineIdentifier);
-    await contract.provider.waitForTransaction(transaction.hash);
+      const transaction = await contract.transferWine(this.state.formData.newOwner, this.state.formData.transferWineIdentifier);
+      await contract.provider.waitForTransaction(transaction.hash);
 
-    dialog.isDone = true;
-    dialog.message = 'Wine transfer successful!';
-    this.setState({
-      dialog
-    });
+      dialog.isDone = true;
+      dialog.success = true;
+      dialog.message = 'Wine transfer successful!';
+      this.setState({
+        dialog
+      });
+    } catch (e) {
+      dialog.isDone = true;
+      dialog.success = false;
+      dialog.message = 'Wine transfer failed: ' + e.message;
+      this.setState({
+        dialog
+      });
+    }
   }
 
   render() {

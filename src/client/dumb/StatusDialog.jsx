@@ -1,6 +1,6 @@
 import React from 'react';
 import { DialogContent, Dialog, DialogTitle, DialogContentText, DialogActions, Button, CircularProgress } from '@material-ui/core';
-import { Check } from '@material-ui/icons';
+import { Check, Error } from '@material-ui/icons';
 
 class StatusDialog extends React.Component {
   render() {
@@ -14,9 +14,9 @@ class StatusDialog extends React.Component {
       >
         <DialogTitle id="alert-dialog-title">
           {
-            this.props.dialog.isDone ? <Check /> : <CircularProgress />
+            this.props.dialog.isDone ? (this.props.dialog.success ? <Check color="primary" /> : <Error color="error" />) : <CircularProgress />
           }
-          {this.props.dialog.title}
+          <span style={{marginLeft: 20}}>{this.props.dialog.title}</span>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

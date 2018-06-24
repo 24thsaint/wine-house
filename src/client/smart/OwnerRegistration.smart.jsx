@@ -23,6 +23,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
       dialog: {
         open: false,
         isDone: false,
+        success: null,
         title: 'Wine Owner Registration',
         message: ''
       },
@@ -90,12 +91,18 @@ class OwnerRegistrationSmartComponent extends React.Component {
       }
 
       dialog.isDone = true;
+      dialog.success = true;
       dialog.message = 'Partner successfully registered!';
       this.setState({
         dialog
       });
     } catch (e) {
-      console.log(e);
+      dialog.isDone = true;
+      dialog.success = false;
+      dialog.message = 'Registration failed: ' + e.message;
+      this.setState({
+        dialog
+      });
     }
   }
 
