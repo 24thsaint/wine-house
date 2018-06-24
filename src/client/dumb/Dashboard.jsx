@@ -25,7 +25,7 @@ class Dashboard extends React.Component {
           <Typography variant="caption" align="center">{UserStatus.getDescription(this.props.userType)}</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="subheading">Balance: {this.props.balance}</Typography>
+          <Typography variant="subheading">Balance: {this.props.balance} ETH</Typography>
         </Grid>
         <Grid item>
           <Typography variant="subheading">Address: {'0x' + this.props.address}</Typography>

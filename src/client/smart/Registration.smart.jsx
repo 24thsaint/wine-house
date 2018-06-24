@@ -95,6 +95,8 @@ class RegistrationSmartComponent extends React.Component {
     } else {
       dialog.open = false;
       this.setState({
+        registrationStatus: 0,
+        walletProgress: 0,
         dialog
       });
     }

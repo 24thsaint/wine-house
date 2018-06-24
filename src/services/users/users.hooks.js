@@ -10,7 +10,21 @@ module.exports = {
     all: [],
     find: [ authenticate('jwt') ],
     get: [ authenticate('jwt') ],
-    create: [ hashPassword() ],
+    create: [ 
+      async function noDuplicates(context) {
+        const result = await context.app.service('/api/users').find({
+          query: {
+            username: context.data.username
+          }
+        });
+        
+        if (result.total >= 1) {
+          throw new Error('Username is already taken');
+        } else {
+          return context;
+        }
+      }, 
+      hashPassword() ],
     update: [ disallow() ],
     patch: [ hashPassword(),  authenticate('jwt') ],
     remove: [ disallow() ]
