@@ -66,7 +66,7 @@ class EthereumContractClient {
       progressCallBack('SUCCESSFUL!', mineResult);
       this.contract = contractAddress;
     } catch (e) {
-      console.log(e);
+      progressCallBack('Error: ' + e.message, e);
     }
 
     return this.contract;

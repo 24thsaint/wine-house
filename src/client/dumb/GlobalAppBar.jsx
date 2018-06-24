@@ -19,7 +19,8 @@ class GlobalAppBar extends React.Component {
       open: false,
       user: {
         status: 'unverified'
-      }
+      },
+      fresh: false
     };
 
     client.on('authenticated', async function(evt) {
@@ -44,6 +45,13 @@ class GlobalAppBar extends React.Component {
     if (user.code === 401) {
       this.setState({
         authenticated: false,
+      });
+    }
+
+    const users = await client.service('/api/users').find();
+    if (users.total <= 1) {
+      this.setState({
+        fresh: true
       });
     }
   }
@@ -185,7 +193,13 @@ class GlobalAppBar extends React.Component {
                       <ListItemText primary="Register Owner" />
                     </ListItem>
                   </Link>
+                </div>
+                : undefined
+            }
 
+            {
+              this.state.fresh === true ?
+                <div>
                   <Divider />
 
                   <Link to="/admin/tools">
