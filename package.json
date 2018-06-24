@@ -32,7 +32,8 @@
     "build:webpack:watch": "webpack -w",
     "build:webpack": "webpack",
     "build:full": "npm run build && npm run build:webpack",
-    "build:full:watch": "npm run build:watch & npm run build:webpack:watch"
+    "build:full:watch": "npm run build:watch & npm run build:webpack:watch",
+    "postinstall": "npm run build:full"
   },
   "dependencies": {
     "@feathersjs/authentication": "^2.1.6",
