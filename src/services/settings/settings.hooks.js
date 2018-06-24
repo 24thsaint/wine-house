@@ -7,7 +7,7 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [authenticate('jwt'), onlyMaster],
+    create: [authenticate('jwt'), onlyMaster], 
     update: [disallow()],
     patch: [authenticate('jwt'), onlyMaster],
     remove: [disallow()]

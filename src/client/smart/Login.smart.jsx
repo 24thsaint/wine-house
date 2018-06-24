@@ -44,6 +44,7 @@ class LoginSmartComponent extends React.Component {
   render() {
     return (
       <Grid
+        container
         alignItems="center"
         justify="center"
         direction="column"
