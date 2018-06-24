@@ -1,5 +1,6 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const { disallow } = require('feathers-hooks-common');
+const onlyMaster = require('../../hooks/onlyMaster');
 
 module.exports = {
   before: {
@@ -23,7 +24,7 @@ module.exports = {
       }
     ],
     update: [disallow()],
-    patch: [],
+    patch: [onlyMaster],
     remove: [disallow()]
   },
 

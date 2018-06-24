@@ -1,4 +1,6 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
+const { disallow } = require('feathers-hooks-common');
+const onlyMaster = require('../../hooks/onlyMaster');
 
 const {
   hashPassword, protect
@@ -10,9 +12,9 @@ module.exports = {
     find: [ authenticate('jwt') ],
     get: [ authenticate('jwt') ],
     create: [ hashPassword() ],
-    update: [ hashPassword(),  authenticate('jwt') ],
-    patch: [ hashPassword(),  authenticate('jwt') ],
-    remove: [ authenticate('jwt') ]
+    update: [ disallow() ],
+    patch: [ hashPassword(),  authenticate('jwt'), onlyMaster ],
+    remove: [ disallow() ]
   },
 
   after: {
