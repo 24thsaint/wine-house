@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import authenticate from '../authenticator';
 import client from '../client';
+import settings from '../helpers/settings';
 import { Drawer, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
 import { Home, LibraryAdd, GroupAdd, VerifiedUser, Send, Settings, Star, Assessment } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
@@ -20,7 +21,8 @@ class GlobalAppBar extends React.Component {
       user: {
         status: 'unverified'
       },
-      fresh: false
+      fresh: false,
+      contractAddress: false
     };
 
     client.on('authenticated', async function(evt) {
@@ -41,18 +43,27 @@ class GlobalAppBar extends React.Component {
   }
 
   async componentDidMount() {
-    const user = await authenticate();
-    if (user.code === 401) {
+    try {
+      const user = await authenticate();
+      if (user.code === 401) {
+        this.setState({
+          authenticated: false,
+        });
+      }
+  
+      const users = await client.service('/api/users').find();
+      if (users.total <= 1) {
+        this.setState({
+          fresh: true
+        });
+      }
+  
+      const contractAddress = await settings.get('contractAddress');
       this.setState({
-        authenticated: false,
+        contractAddress
       });
-    }
-
-    const users = await client.service('/api/users').find();
-    if (users.total <= 1) {
-      this.setState({
-        fresh: true
-      });
+    } catch(e) {
+      console.log(e);
     }
   }
 
@@ -81,6 +92,20 @@ class GlobalAppBar extends React.Component {
               Wine House
             </Typography>
             {this.state.authenticated ? <Button color="inherit" onClick={this.logout}>Logout</Button> : undefined}
+            {
+              this.state.contractAddress ? 
+                <Typography style={{marginLeft: 10}}>
+                  Contract address:&nbsp;
+                  <a 
+                    style={{color: 'blue'}} 
+                    href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`}
+                    target="blank"
+                  >
+                    {this.state.contractAddress}
+                  </a>
+                </Typography>
+                : <Typography>Retrieving contract address...</Typography>
+            }
           </Toolbar>
         </AppBar>
 

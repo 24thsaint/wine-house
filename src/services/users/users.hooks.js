@@ -8,8 +8,8 @@ const {
 module.exports = {
   before: {
     all: [],
-    find: [ authenticate('jwt') ],
-    get: [ authenticate('jwt') ],
+    find: [],
+    get: [],
     create: [ 
       async function noDuplicates(context) {
         const result = await context.app.service('/api/users').find({

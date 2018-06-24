@@ -62,7 +62,7 @@ class WalletImportSmartComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{margin: 100}}>
         <Typography variant="headline">Import an existing wallet from a private key</Typography>
 
         {
