@@ -178,6 +178,8 @@ contract WineHouse {
         public onlyAssetOwner(_uniqueIdentifier) onlyVerified() {
             
         wines[_uniqueIdentifier].ownerHistory.push(wines[_uniqueIdentifier].currentOwner);
+        wineOwners[wines[_uniqueIdentifier].currentOwner].wines[_uniqueIdentifier] = false;
+        
         wines[_uniqueIdentifier].currentOwner = _to;
 
         uint totalElementCount = getOwnedWineCountOf(msg.sender);
@@ -194,6 +196,7 @@ contract WineHouse {
         wineOwners[msg.sender].ownedWines.length = totalElementCount - 1;
 
         wineOwners[_to].ownedWines.push(_uniqueIdentifier);
+        wineOwners[_to].wines[_uniqueIdentifier] = true;
 
         emit WineTransfer(_to, _uniqueIdentifier);
     }
