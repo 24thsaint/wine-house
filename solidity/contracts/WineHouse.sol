@@ -2,10 +2,10 @@ pragma solidity ^0.4.21;
 
 contract WineHouse {
     address public owner;
-    mapping (string => WineData) private wines;
+    mapping (bytes32 => WineData) private wines;
     mapping (address => bool) private trustedPartners;
     mapping (address => OwnerInfo) private wineOwners;
-    string[] private wineIndices;
+    bytes32[] private wineIndices;
     
     constructor() public {
         owner = msg.sender;
@@ -13,8 +13,8 @@ contract WineHouse {
     
     struct OwnerInfo {
         string name;
-        mapping (string => bool) wines;
-        string[] ownedWines;
+        mapping (bytes32 => bool) wines;
+        bytes32[] ownedWines;
         bool isVerified;
         string proofOfIdentity;
     }
@@ -42,7 +42,7 @@ contract WineHouse {
         _;
     }
     
-    modifier onlyAssetOwner(string _uniqueIdentifier) {
+    modifier onlyAssetOwner(bytes32 _uniqueIdentifier) {
         require(wineOwners[msg.sender].wines[_uniqueIdentifier] == true);
         _;
     }
@@ -52,7 +52,7 @@ contract WineHouse {
         _;
     }
 
-    modifier wineShouldNotExist(string _uniqueIdentifier) {
+    modifier wineShouldNotExist(bytes32 _uniqueIdentifier) {
         require(wines[_uniqueIdentifier].isActive == false);
         _;
     }
@@ -65,23 +65,23 @@ contract WineHouse {
         return wineOwners[_wineOwner].ownedWines.length;
     }
 
-    function getWineIdentifierAt(address _wineOwner, uint _index) view public returns (string) {
+    function getWineIdentifierAt(address _wineOwner, uint _index) view public returns (bytes32) {
         return wineOwners[_wineOwner].ownedWines[_index];
     }
 
-    function getOwnerHistoryAt(string _uniqueIdentifier, uint _index) view public returns (address) {
+    function getOwnerHistoryAt(bytes32 _uniqueIdentifier, uint _index) view public returns (address) {
         return wines[_uniqueIdentifier].ownerHistory[_index];
     }
 
-    function getOwnerHistoryCountOf(string _uniqueIdentifier) view public returns (uint count) {
+    function getOwnerHistoryCountOf(bytes32 _uniqueIdentifier) view public returns (uint count) {
         return wines[_uniqueIdentifier].ownerHistory.length;
     }
 
     event NewWineOwner(address _ownerAddress, string _name);
     event NewTrustedPartner(address _partnerAddress, string _name);
     event RemovedTrustedPartner(address _partnerAddress);
-    event NewWine(string _uniqueIdentifier);
-    event WineTransfer(address _to, string _uniqueIdentifier);
+    event NewWine(bytes32 _uniqueIdentifier);
+    event WineTransfer(address _to, bytes32 _uniqueIdentifier);
     
     // ===============================================================
     
@@ -147,13 +147,20 @@ contract WineHouse {
         string _frontLabel,
         string _backLabel,
         string _bottle,
-        string _uniqueIdentifier
+        bytes32 _uniqueIdentifier
     ) public onlyTrustedPartner wineShouldNotExist(_uniqueIdentifier)
         returns (
             uint index, 
-            string uniqueIdentifier, 
+            bytes32 uniqueIdentifier, 
             bool isActive
         ) {
+        
+        bytes32 uniqueIdentCheck = keccak256(abi.encodePacked(_backLabel, "|",  _bottle, "|", _capsule, "|", _cork, "|", _frontLabel, "|", _glass));
+            
+        require(
+            keccak256(abi.encodePacked(uniqueIdentCheck)) == keccak256(abi.encodePacked(_uniqueIdentifier))
+        );
+        
         wines[_uniqueIdentifier].cork = _cork;
         wines[_uniqueIdentifier].capsule = _capsule;
         wines[_uniqueIdentifier].glass = _glass;
@@ -174,7 +181,7 @@ contract WineHouse {
         return (wineIndices.length - 1, _uniqueIdentifier, wines[_uniqueIdentifier].isActive);
     }
     
-    function transferWine(address _to, string _uniqueIdentifier) 
+    function transferWine(address _to, bytes32 _uniqueIdentifier) 
         public onlyAssetOwner(_uniqueIdentifier) onlyVerified() {
             
         wines[_uniqueIdentifier].ownerHistory.push(wines[_uniqueIdentifier].currentOwner);
@@ -191,7 +198,7 @@ contract WineHouse {
             }
         }
 
-        string storage lastElement = wineOwners[msg.sender].ownedWines[totalElementCount - 1];
+        bytes32 lastElement = wineOwners[msg.sender].ownedWines[totalElementCount - 1];
         wineOwners[msg.sender].ownedWines[index] = lastElement;
         wineOwners[msg.sender].ownedWines.length = totalElementCount - 1;
 
@@ -201,7 +208,7 @@ contract WineHouse {
         emit WineTransfer(_to, _uniqueIdentifier);
     }
     
-    function retrieveWineData(string _uniqueIdentifier) view public 
+    function retrieveWineData(bytes32 _uniqueIdentifier) view public 
         returns (
             string cork,
             string capsule,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { SHA256 } from 'crypto-js';
 import WineRegistrationForm from '../dumb/WineRegistrationForm';
 import InputHelper from '../helpers/inputHelper';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
@@ -7,6 +6,7 @@ import EthereumContractClient from '../ethereumContractClient';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
 import StatusDialog from '../dumb/StatusDialog';
+import HashProvider from '../helpers/hashProvider';
 
 class WineRegistrationSmartComponent extends React.Component {
   constructor(props) {
@@ -83,7 +83,7 @@ class WineRegistrationSmartComponent extends React.Component {
       });
       const contract = await this.ethereumContractClient.loadContractPrivate(this.state.contractAddress, wallet.privateKey);
       const { cork, capsule, glass, frontLabel, backLabel, bottle } = this.state.formData;
-      const uniqueIdentifier = SHA256(JSON.stringify(this.state.formData)).toString();
+      const uniqueIdentifier = HashProvider.getWineIdentifier(this.state.formData);
   
       dialog.message = 'Creating wine...';
       this.setState({

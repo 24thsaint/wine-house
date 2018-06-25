@@ -54,7 +54,7 @@ class WalletImportSmartComponent extends React.Component {
       this.setState({
         success: {
           status: false,
-          message: e
+          message: e.message
         }
       });
     }

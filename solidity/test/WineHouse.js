@@ -1,6 +1,6 @@
 /* global artifacts, contract, assert */
 const faker = require('faker');
-const crypto = require('crypto');
+const HashProvider = require('./hashProvider');
 const WineHouse = artifacts.require('./WineHouse.sol');
 
 contract('WineHouse', function (accountAddresses) {
@@ -64,7 +64,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
@@ -87,6 +87,36 @@ contract('WineHouse', function (accountAddresses) {
     assert.equal(retrievedWine[6], accountAddresses[0]);
   });
 
+  it('Disallows creation of new wine with mismatching unique identifier', async function () {
+    await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
+
+    const wineData = {
+      cork: faker.random.words(5),
+      capsule: faker.random.words(5),
+      glass: faker.random.words(5),
+      frontLabel: faker.random.words(5),
+      backLabel: faker.random.words(5),
+      bottle: faker.random.words(5)
+    };
+
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
+    wineData.uniqueIdentifier = uniqueIdentifier.substring(5);
+    try {
+      await wineHouse.createWine(
+        wineData.cork,
+        wineData.capsule,
+        wineData.glass,
+        wineData.frontLabel,
+        wineData.backLabel,
+        wineData.bottle,
+        uniqueIdentifier
+      );
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+
+  });
+
   it('Retrieves the owner history count of a wine', async function() {
     await wineHouse.addTrustedPartner(accountAddresses[0], 'Rave Arevalo', faker.random.alphaNumeric(32));
     await wineHouse.registerWineOwner(accountAddresses[1], 'Tristan Macadangdang', faker.random.alphaNumeric(32));
@@ -100,7 +130,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
@@ -134,7 +164,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
@@ -174,8 +204,9 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier1 = crypto.createHash('sha256').update(JSON.stringify(wineData1)).digest('hex');
-    const uniqueIdentifier2 = crypto.createHash('sha256').update(JSON.stringify(wineData2)).digest('hex');
+    const uniqueIdentifier1 = HashProvider.getWineIdentifier(wineData1);
+    const uniqueIdentifier2 = HashProvider.getWineIdentifier(wineData2);
+
     wineData1.uniqueIdentifier = uniqueIdentifier1;
     wineData2.uniqueIdentifier = uniqueIdentifier2;
 
@@ -215,7 +246,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
 
     await wineHouse.createWine(
@@ -245,7 +276,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
@@ -274,7 +305,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     try {
       await wineHouse.createWine(
@@ -339,7 +370,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
@@ -378,7 +409,7 @@ contract('WineHouse', function (accountAddresses) {
       bottle: faker.random.words(5)
     };
 
-    const uniqueIdentifier = crypto.createHash('sha256').update(JSON.stringify(wineData)).digest('hex');
+    const uniqueIdentifier = HashProvider.getWineIdentifier(wineData);
     wineData.uniqueIdentifier = uniqueIdentifier;
     await wineHouse.createWine(
       wineData.cork,
