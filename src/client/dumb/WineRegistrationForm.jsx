@@ -3,6 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
+import { Create } from '@material-ui/icons';
 
 class WineRegistrationForm extends React.Component {
   constructor(props) {
@@ -87,7 +88,7 @@ class WineRegistrationForm extends React.Component {
                 onClick={this.props.handleRegister}
                 type="submit"
               >
-                Submit
+                <Create style={{marginRight: 5}} /> Register
               </Button>
             </Grid>
           </Paper>

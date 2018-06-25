@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button, Typography } from '@material-ui/core';
 import WalletProgress from '../dumb/WalletProgress';
+import { Create } from '@material-ui/icons';
 
 class Login extends React.Component {
   constructor(props) {
@@ -86,7 +87,7 @@ class Login extends React.Component {
                 type="submit"
                 disabled={this.props.walletProgress > 0 && this.props.walletProgress < 1}
               >
-                Register
+                <Create style={{ marginRight: 5 }} /> Register
               </Button>
             </Grid> 
           </Paper>

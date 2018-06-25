@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Lock } from '@material-ui/icons';
 
 class Login extends React.Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class Login extends React.Component {
                 onClick={this.props.handleLogin}
                 type="submit"
               >
-                Login
+                <Lock style={{marginRight: 5}} /> Login
               </Button>
             </Grid>
             <Grid item>

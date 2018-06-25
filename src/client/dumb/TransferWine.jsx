@@ -3,6 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
+import { Send } from '@material-ui/icons';
 
 class TransferWine extends React.Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class TransferWine extends React.Component {
                 onClick={this.props.handleSubmit}
                 type="submit"
               >
-                Transfer
+                <Send style={{marginRight: 5}} /> Transfer
               </Button>
             </Grid>
           </Paper>

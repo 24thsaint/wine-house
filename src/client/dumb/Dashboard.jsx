@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Typography, Button } from '@material-ui/core';
+import { AccountBalanceWallet } from '@material-ui/icons';
 import UserStatus from '../helpers/userStatus';
 
 class Dashboard extends React.Component {
@@ -31,7 +32,7 @@ class Dashboard extends React.Component {
           <Typography variant="subheading">Address: {'0x' + this.props.address}</Typography>
         </Grid>
         <Grid item>
-          <Button variant="outlined" onClick={() => {this.navigate('/import-wallet');}}>Import Wallet</Button>
+          <Button variant="outlined" onClick={() => {this.navigate('/wallet-tools');}}><AccountBalanceWallet style={{marginRight: 5}} /> Wallet Tools</Button>
         </Grid>
       </Grid>
     );

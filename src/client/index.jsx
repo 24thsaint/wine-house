@@ -61,7 +61,7 @@ const Index = () => (
                 <Route path="/wine/transfer" component={TransferWineSmartComponent} />
                 <Route path="/admin/tools" component={AdminTools} />
                 <Route path="/dashboard" component={DashboardSmartComponent} />
-                <Route path="/import-wallet" component={WalletImportSmartComponent} />
+                <Route path="/wallet-tools" component={WalletImportSmartComponent} />
                 <Route path="/partner/register" component={PartnerRegistration} />
                 <Route path="/owner/register" component={OwnerRegistrationSmartComponent} />
                 <Route path="/verify" component={SubmitVerificationSmartComponent} />

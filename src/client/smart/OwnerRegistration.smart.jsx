@@ -6,6 +6,7 @@ import EthereumContractClient from '../ethereumContractClient';
 import StatusDialog from '../dumb/StatusDialog';
 import settings from '../helpers/settings';
 import authenticate from '../authenticator';
+import { PersonAdd } from '@material-ui/icons';
 
 const ethereumContractClient = new EthereumContractClient();
 
@@ -142,7 +143,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
                 color="primary"
                 type="submit"
               >
-                Submit
+                <PersonAdd style={{marginRight: 5}} /> Register
               </Button>
             </Grid>
           </form>
