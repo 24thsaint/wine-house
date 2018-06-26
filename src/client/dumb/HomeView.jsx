@@ -1,6 +1,6 @@
 /* global window */
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, CircularProgress } from '@material-ui/core';
 
 import Login from './Login';
 import authenticate from '../authenticator';
@@ -14,8 +14,18 @@ class HomeView extends React.Component {
   }
 
   async componentDidMount() {
-    const result = await authenticate();
-    if (result.code === 401) {
+    let result;
+    
+    try {
+      result = await authenticate();
+    
+      if (result.code === 401) {
+        this.setState({
+          hasLoaded: true
+        });
+      }
+    } catch (e) {
+      console.log(e);
       this.setState({
         hasLoaded: true
       });
@@ -32,7 +42,7 @@ class HomeView extends React.Component {
               handleInputChange={this.props.handleInputChange}
               formData={this.props.formData}
             /> 
-            : <Typography>Loading...</Typography>
+            : <CircularProgress />
         }
       </div>
     );

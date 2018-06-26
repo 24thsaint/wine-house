@@ -95,16 +95,15 @@ class GlobalAppBar extends React.Component {
             {
               this.state.contractAddress ? 
                 <Typography style={{marginLeft: 10}}>
-                  Contract address:&nbsp;
                   <a 
                     style={{color: 'blue'}} 
                     href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`}
                     target="blank"
                   >
-                    {this.state.contractAddress}
+                    View Contract
                   </a>
                 </Typography>
-                : <Typography>Retrieving contract address...</Typography>
+                : <Typography>Loading...</Typography>
             }
           </Toolbar>
         </AppBar>
