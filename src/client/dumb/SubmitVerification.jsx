@@ -3,7 +3,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Button, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, Divider } from '@material-ui/core';
-import FileUpload from '@material-ui/icons/FileUpload';
 
 class SubmitVerification extends React.Component {
   constructor(props) {
@@ -49,10 +48,7 @@ class SubmitVerification extends React.Component {
             <Grid item>
               <FormControl component="fieldset" required>
                 <FormLabel>Verification Proof</FormLabel>
-                <Button variant="contained" color="default">
-                  <input type="file" onChange={this.props.handleFileInputChange } />
-                  <FileUpload />
-                </Button>
+                <input type="file" onChange={this.props.handleFileInputChange } />
               </FormControl>
             </Grid>
             <Divider style={{margin: 10}} />
