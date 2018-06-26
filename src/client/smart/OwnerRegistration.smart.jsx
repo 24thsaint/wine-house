@@ -81,7 +81,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
       const contractAddress = this.state.contractAddress;
       const contract = await ethereumContractClient.loadContractPrivate(contractAddress, wallet.privateKey);
       
-      dialog.message = 'Registering Trusted Partner...';
+      dialog.message = 'Registering Wine Owner...';
       this.setState({
         dialog
       });
@@ -93,7 +93,7 @@ class OwnerRegistrationSmartComponent extends React.Component {
 
       dialog.isDone = true;
       dialog.success = true;
-      dialog.message = 'Partner successfully registered!';
+      dialog.message = 'Owner successfully registered!';
       this.setState({
         dialog
       });
