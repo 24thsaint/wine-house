@@ -24,8 +24,7 @@ class UserStatus {
   
       return 'unverified';
     } catch (e) {
-      console.log(e);
-      return 'Not Connected To Network';
+      return false;
     }
   }
 

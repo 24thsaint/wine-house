@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Grid, Typography, TextField, Divider } from '@material-ui/core';
 
 import EthereumContract from '../ethereumContractClient';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
@@ -14,7 +14,7 @@ class AdminTools extends React.Component {
     this.state = {
       open: false,
       formData: {
-        password: ''
+        newContractAddress: ''
       },
       unlockProgress: 0,
       dialog: {
@@ -31,6 +31,7 @@ class AdminTools extends React.Component {
     this.handleWallet = this.handleWallet.bind(this);
     this.setDeployProgressMessage = this.setDeployProgressMessage.bind(this);
     this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleNewContract = this.handleNewContract.bind(this);
     this.ethereumContract = new EthereumContract();
     this.inputHelper = new InputHelper(this);
   }
@@ -68,6 +69,34 @@ class AdminTools extends React.Component {
     this.setState({
       dialog
     });
+  }
+
+  async handleNewContract() {
+    const newContractAddress = this.state.formData.newContractAddress;
+    const dialog = this.state.dialog;
+
+    try {
+      dialog.open = true;
+      dialog.message = 'Setting contract address...';
+      this.setState({
+        dialog
+      });
+      await settings.set('contractAddress', newContractAddress);
+
+      dialog.isDone = true;
+      dialog.success = true;
+      dialog.message = 'Contract address successfully changed to: ' + newContractAddress;
+      this.setState({
+        dialog
+      });
+    } catch (e) {
+      dialog.isDone = true;
+      dialog.success = false;
+      dialog.message = 'Error changing contract address: ' + e.message;
+      this.setState({
+        dialog
+      });
+    }
   }
 
   async handleWallet(wallet) {
@@ -111,7 +140,36 @@ class AdminTools extends React.Component {
   render() {
     return (
       <div style={{margin: 100}}>
-        <Button variant="raised" onClick={this.deployContract}>Deploy Contract</Button>
+        
+        <Grid 
+          container
+          direction="column"
+          spacing={40}
+        >
+          <Grid container item direction="row" spacing={40}>
+            <Grid item>
+              <Typography>Deploy new contract to the network</Typography>
+            </Grid>
+            <Grid item>
+              <Button variant="raised" onClick={this.deployContract}>Deploy Contract</Button>
+            </Grid>
+          </Grid>
+          <Divider />
+          <Grid container item direction="row" spacing={40}>
+            <Grid item>
+              <TextField 
+                label="New Contract Address"
+                name="newContractAddress"
+                onChange={this.inputHelper.handleInputChange}
+              >
+              </TextField>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" onClick={this.handleNewContract}>Overwrite Contract Address</Button>
+            </Grid>
+          </Grid>
+        </Grid>
+
         <WalletUnlockModal 
           open={this.state.open} 
           handleClose={this.handleClose}

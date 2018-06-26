@@ -3,9 +3,9 @@ import ethers from 'ethers';
 import axios from 'axios';
 
 const providers = ethers.providers;
-// const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545'); 
-const network = providers.networks.ropsten;
-var provider = new providers.InfuraProvider(network);
+const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545'); 
+// const network = providers.networks.ropsten;
+// var provider = new providers.InfuraProvider(network);
 
 class EthereumContractClient {
   constructor() {

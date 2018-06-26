@@ -1,19 +1,24 @@
 /* global Blob, document */
 import React from 'react';
-import { TextField, Typography, Button, FormControl, Paper, Grid } from '@material-ui/core';
+import { TextField, Typography, Button, FormControl, Paper, Grid, InputAdornment, IconButton } from '@material-ui/core';
 import InputHelper from '../helpers/inputHelper';
 import client from '../client';
 import EthereumWallet from '../ethereumWallet';
 import WalletProgress from '../dumb/WalletProgress';
 import authenticate from '../authenticator';
 import WalletUnlockModal from '../dumb/WalletUnlockModal';
-import { FileDownload, FileUpload, Visibility } from '@material-ui/icons';
+import { FileDownload, FileUpload, Visibility, PhotoCamera } from '@material-ui/icons';
+import QRCode from 'qrcode.react';
 
 class WalletImportSmartComponent extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      scanner: {
+        open: false,
+        field: ''
+      },
       formData: {
         privateKey: '',
         password: ''
@@ -38,6 +43,41 @@ class WalletImportSmartComponent extends React.Component {
     await authenticate();
   }
 
+  handleScan(data) {
+    if (!data) {
+      return;
+    }
+
+    if (!data.startsWith('0x')) {
+      return;
+    }
+    const scanner = this.state.scanner;
+    scanner.open = false;
+
+    const newData = {
+      target: {
+        name: this.state.scanner.field,
+        value: data
+      }
+    };
+
+    this.inputHelper.handleInputChange(newData);
+
+    this.setState({
+      scanner
+    });
+  }
+
+  toggleScanner(field) {
+    const scanner = this.state.scanner;
+    scanner.open = !scanner.open;
+    scanner.field = field;
+
+    this.setState({
+      scanner
+    });
+  }
+
   handleProgress(percent) {
     this.setState({
       progress: percent
@@ -46,7 +86,7 @@ class WalletImportSmartComponent extends React.Component {
 
   handleExport() {
     const wallet = client.get('wallet');
-    
+
     const blob = new Blob([JSON.stringify(wallet)], {
       'type': 'application/json'
     });
@@ -87,7 +127,7 @@ class WalletImportSmartComponent extends React.Component {
           status: true,
           message: result
         }
-      }); 
+      });
     } catch (e) {
       this.setState({
         success: {
@@ -100,76 +140,97 @@ class WalletImportSmartComponent extends React.Component {
 
   render() {
     return (
-      <div style={{margin: 100}}>
-        <Paper elevation={5} style={{padding: 20}}>
-          <Typography variant="headline">Import an existing wallet from a private key</Typography>
-
-          {
-            this.state.success.status ===  true ?
-              <Typography variant="headline">Wallet Successfully Imported!</Typography>
-              : undefined
-          }
-
-          {
-            this.state.success.status ===  false ?
-              <Typography variant="headline">Wallet Import Failed: {this.state.success.message}</Typography>
-              : undefined
-          }
-
-          <form onSubmit={this.handleSubmit}>
-            <FormControl>
-              <TextField
-                id="privateKey"
-                name="privateKey"
-                label="Private Key"
-                value={this.state.formData.privateKey}
-                onChange={this.inputHelper.handleInputChange}
-                margin="normal"
-              />
-              <TextField
-                id="password"
-                name="password"
-                label="Password"
-                value={this.state.formData.password}
-                onChange={this.inputHelper.handleInputChange}
-                margin="normal"
-              />
-              <WalletProgress progress={this.state.progress} />
-              <Button variant="raised" color="primary" type="submit" onClick={this.handleSubmit}>
-                <FileUpload style={{marginRight: 5}} /> Import
-              </Button>
-            </FormControl>
-          </form>
-        </Paper>
-
-        <Paper style={{marginTop: 20, padding: 20}} elevation={5}>
+      <div style={{ margin: 100 }}>
+        <Paper elevation={5} style={{ padding: 20 }}>
           <Grid container direction="column">
             <Grid item>
+              <Typography variant="headline">Import an existing wallet from a private key</Typography>
+
               {
-                this.state.privateKey ?
-                  <TextField style={{marginBottom: 10}} fullWidth label="Private Key" value={this.state.privateKey} contentEditable={false}></TextField>
+                this.state.success.status === true ?
+                  <Typography variant="headline">Wallet Successfully Imported!</Typography>
+                  : undefined
+              }
+
+              {
+                this.state.success.status === false ?
+                  <Typography variant="headline">Wallet Import Failed: {this.state.success.message}</Typography>
                   : undefined
               }
             </Grid>
-          
-            <Grid container item direction="row">
+
+            <form onSubmit={this.handleSubmit}>
+              <Grid item style={{overflowX: 'auto'}}>
+                <FormControl>
+                  <TextField
+                    id="privateKey"
+                    name="privateKey"
+                    label="Private Key"
+                    value={this.state.formData.privateKey}
+                    onChange={this.inputHelper.handleInputChange}
+                    margin="normal"
+                    InputProps={{
+                      endAdornment:
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => { this.toggleScanner('privateKey'); }}
+                        >
+                          <PhotoCamera />
+                        </IconButton>
+                      </InputAdornment>
+                    }}
+                  />
+                  <TextField
+                    id="password"
+                    name="password"
+                    label="Password"
+                    value={this.state.formData.password}
+                    onChange={this.inputHelper.handleInputChange}
+                    margin="normal"
+                  />
+                  <WalletProgress progress={this.state.progress} />
+                  <Button variant="raised" color="primary" type="submit" onClick={this.handleSubmit}>
+                    <FileUpload style={{ marginRight: 5 }} /> Import
+                  </Button>
+                </FormControl>
+              </Grid>
+            </form>
+          </Grid>
+        </Paper>
+
+        <Paper style={{ marginTop: 20, padding: 20 }} elevation={5}>
+          <Grid container direction="column" alignItems="flex-start" spacing={24}>
+            {
+              this.state.privateKey ?
+                <Grid container item direction="row" spacing={24}>
+                  <Grid item>
+                    <QRCode value={this.state.privateKey} />
+                  </Grid>
+                  <Grid item>
+                    <TextField style={{ marginBottom: 10 }} fullWidth label="Private Key" value={this.state.privateKey} contentEditable={false}></TextField>
+                  </Grid>
+                </Grid>
+                : undefined
+            }
+
+            <Grid container item direction="row" spacing={24}>
               <Grid item>
                 <Button variant="contained" color="primary" onClick={this.handleExport}>
-                  <FileDownload style={{marginRight: 5}} /> Download current wallet
+                  <FileDownload style={{ marginRight: 5 }} /> Download current wallet
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" onClick={this.handleShowPrivateKey} style={{marginLeft: 10}}>
-                  <Visibility style={{marginRight: 5}} /> Show current wallet private key
+                <Button variant="contained" onClick={this.handleShowPrivateKey}>
+                  <Visibility style={{ marginRight: 5 }} /> Show current wallet private key
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </Paper>
 
-        <WalletUnlockModal 
-          open={this.state.open} 
-          handleWallet={this.handleWallet} 
+        <WalletUnlockModal
+          open={this.state.open}
+          handleWallet={this.handleWallet}
           handleClose={this.handleShowPrivateKey}
         />
       </div>

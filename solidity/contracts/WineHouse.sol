@@ -2,10 +2,10 @@ pragma solidity ^0.4.21;
 
 contract WineHouse {
     address public owner;
+    bytes32[] public wineIndices;
     mapping (bytes32 => WineData) private wines;
     mapping (address => bool) private trustedPartners;
     mapping (address => OwnerInfo) private wineOwners;
-    bytes32[] private wineIndices;
     
     constructor() public {
         owner = msg.sender;
@@ -13,10 +13,11 @@ contract WineHouse {
     
     struct OwnerInfo {
         string name;
-        mapping (bytes32 => bool) wines;
-        bytes32[] ownedWines;
-        bool isVerified;
         string proofOfIdentity;
+        bool isVerified;
+        bytes32[] ownedWines;
+        mapping (bytes32 => bool) wines;
+        mapping (bytes32 => uint) ownedWinesIndices;
     }
     
     struct WineData {
@@ -30,6 +31,10 @@ contract WineHouse {
         address[] ownerHistory;
         uint index;
         bool isActive;
+    }
+
+    function transferContract(address _to) public onlyMaster {
+        owner = _to;
     }
     
     modifier onlyMaster() {
@@ -108,11 +113,12 @@ contract WineHouse {
 
     }
 
-    function getWineOwner(address _ownerAddress) view public returns (address, string, bool) {
+    function getWineOwner(address _ownerAddress) view public returns (address, string, bool, string) {
         return (
             _ownerAddress,
             wineOwners[_ownerAddress].name,
-            wineOwners[_ownerAddress].isVerified
+            wineOwners[_ownerAddress].isVerified,
+            wineOwners[_ownerAddress].proofOfIdentity
         );
     }
     
@@ -172,9 +178,12 @@ contract WineHouse {
         
         wines[_uniqueIdentifier].isActive = true;
         wines[_uniqueIdentifier].index = wineIndices.length;
+        
         wineIndices.push(_uniqueIdentifier);
+
         wineOwners[msg.sender].wines[_uniqueIdentifier] = true;
         wineOwners[msg.sender].ownedWines.push(_uniqueIdentifier);
+        wineOwners[msg.sender].ownedWinesIndices[_uniqueIdentifier] = wineOwners[msg.sender].ownedWines.length;
 
         emit NewWine(_uniqueIdentifier);
         
@@ -190,13 +199,7 @@ contract WineHouse {
         wines[_uniqueIdentifier].currentOwner = _to;
 
         uint totalElementCount = getOwnedWineCountOf(msg.sender);
-        uint index = 0;
-        for (index = 0; index <= totalElementCount; index++) {
-            require(index != totalElementCount);
-            if (keccak256(wineOwners[msg.sender].ownedWines[index]) == keccak256(_uniqueIdentifier)) {
-                break;
-            }
-        }
+        uint index = wineOwners[msg.sender].ownedWinesIndices[_uniqueIdentifier] - 1;
 
         bytes32 lastElement = wineOwners[msg.sender].ownedWines[totalElementCount - 1];
         wineOwners[msg.sender].ownedWines[index] = lastElement;
@@ -204,6 +207,8 @@ contract WineHouse {
 
         wineOwners[_to].ownedWines.push(_uniqueIdentifier);
         wineOwners[_to].wines[_uniqueIdentifier] = true;
+
+        delete wineOwners[msg.sender].ownedWinesIndices[_uniqueIdentifier];
 
         emit WineTransfer(_to, _uniqueIdentifier);
     }

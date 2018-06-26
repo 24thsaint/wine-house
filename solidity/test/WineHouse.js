@@ -17,6 +17,26 @@ contract('WineHouse', function (accountAddresses) {
     return assert.equal(expectedOwner, actualOwner);
   });
 
+  it('Should transfer the contract to a new owner', async function() {
+    const newOwner = accountAddresses[2];
+
+    await wineHouse.transferContract(newOwner);
+
+    const newContractOwner = await wineHouse.owner();
+    assert.equal(newContractOwner, newOwner);
+  });
+
+  it('Should disallow contract transfer by a non-master', async function() {
+    const newOwner = accountAddresses[2];
+    const nonMaster = accountAddresses[3];
+    
+    try {
+      await wineHouse.transferContract(newOwner, {from: nonMaster});
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert');
+    }
+  });
+
   it('Registers a partner', async function () {
     const partnerAccount = accountAddresses[1];
     const partnerName = 'SM City Supermarket, Iloilo';
@@ -176,12 +196,21 @@ contract('WineHouse', function (accountAddresses) {
       uniqueIdentifier
     );
 
+    const preTransferStateCount = await wineHouse.getOwnedWineCountOf(accountAddresses[0]);
+    const preTransferStateDetail = await wineHouse.getWineIdentifierAt(accountAddresses[0], 0);
+    
+    assert.equal(preTransferStateCount.toNumber(), 1);
+    assert.equal(preTransferStateDetail.toUpperCase(), uniqueIdentifier.toUpperCase());
+
     await wineHouse.transferWine(accountAddresses[1], uniqueIdentifier);
     const result = await wineHouse.retrieveWineData(uniqueIdentifier);
     const ownerHistory = await wineHouse.getOwnerHistoryAt(uniqueIdentifier, 0);
 
     assert.equal(ownerHistory, accountAddresses[0]);
     assert.equal(result[6], accountAddresses[1]);
+
+    const postTransferStateCount = await wineHouse.getOwnedWineCountOf(accountAddresses[0]);
+    assert.equal(postTransferStateCount.toNumber(), 0);
   });
 
   it('Should retrieve a wine count of 2', async function() {

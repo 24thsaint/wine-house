@@ -21,7 +21,6 @@ class GlobalAppBar extends React.Component {
       user: {
         status: 'unverified'
       },
-      fresh: false,
       contractAddress: false
     };
 
@@ -48,13 +47,6 @@ class GlobalAppBar extends React.Component {
       if (user.code === 401) {
         this.setState({
           authenticated: false,
-        });
-      }
-  
-      const users = await client.service('/api/users').find();
-      if (users.total <= 1) {
-        this.setState({
-          fresh: true
         });
       }
   
@@ -222,7 +214,7 @@ class GlobalAppBar extends React.Component {
             }
 
             {
-              this.state.fresh === true ?
+              user.status === 'master' ?
                 <div>
                   <Divider />
 

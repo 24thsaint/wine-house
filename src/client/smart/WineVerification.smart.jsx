@@ -62,7 +62,7 @@ class WineVerificationSmartComponent extends React.Component {
       for (let index = 0; index < ownerHistoryCount; index++) {
         const ownerAddress = await contract.getOwnerHistoryAt(wineIdentifier, index);
         const owner = await contract.getWineOwner(ownerAddress);
-        ownerHistory.push({address: owner[0], name: owner[1]});
+        ownerHistory.push({address: owner[0], name: owner[1], proofOfIdentity: owner[3]});
       }
     
       wine.ownerHistory = ownerHistory;
@@ -70,7 +70,11 @@ class WineVerificationSmartComponent extends React.Component {
       this.setState({
         isWineDataRetrieved: true,
         wine,
-        wineOwner: currentWineOwner[1],
+        wineOwner: {
+          address: response.currentOwner,
+          name: currentWineOwner[1],
+          proofOfIdentity: currentWineOwner[3]
+        },
       });
     } catch (e) {
       this.setState({
