@@ -1,7 +1,7 @@
 {
   "name": "wine-house",
   "description": "Wine Tracking and Verification System Using Ethereum's Smart Contract Technology",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "",
   "main": "src",
   "keywords": [
